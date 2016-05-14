@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 
+#include <err.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -141,11 +142,31 @@ entcat(char *line, size_t len)
 	}
 }
 
+void
+xsetroot(void)
+{
+	char line[BUFSIZ];
+	Display *dpy;
+	int screen;
+	Window root;
+
+	dpy = XOpenDisplay(NULL);
+	if (dpy == NULL)
+		errx(1, "cannot open display");
+	screen = DefaultScreen(dpy);
+	root = RootWindow(dpy, screen);
+
+	for (;;) {
+		entcat(line, sizeof(line));
+		XStoreName(dpy, root, line);
+		XFlush(dpy);
+		sleep(1);
+	}
+}
+
 int
 main(void)
 {
-	char line[BUFSIZ];
-	entcat(line, sizeof(line));
-	puts(line);
+	xsetroot();
 	return 0;
 }
