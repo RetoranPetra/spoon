@@ -82,7 +82,7 @@ dateread(char *buf, size_t len)
 	now = localtime(&t);
 	if (now == NULL)
 		return -1;
-	strftime(buf, len, "%c", now);
+	strftime(buf, len, "%a %d %b %Y %H:%M %Z", now);
 	return 0;
 }
 
