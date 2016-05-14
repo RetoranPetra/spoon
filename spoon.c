@@ -9,12 +9,16 @@
 
 #include <machine/apmvar.h>
 
+#include <X11/XKBlib.h>
+#include <X11/extensions/XKBrules.h>
+
 #define LEN(x) (sizeof (x) / sizeof *(x))
 
 int dummyread(char *buf, size_t len);
 int mpdread(char *buf, size_t len);
 int battread(char *buf, size_t len);
 int dateread(char *buf, size_t len);
+int xkblayoutread(char *buf, size_t len);
 
 struct ent {
 	char *fmt;
@@ -23,6 +27,8 @@ struct ent {
 	{ .fmt = "[%s]", .read = mpdread },
 	{ .fmt = " ", .read = dummyread },
 	{ .fmt = "%s%%", .read = battread },
+	{ .fmt = " ", .read = dummyread },
+	{ .fmt = "[%s]", .read = xkblayoutread },
 	{ .fmt = " ", .read = dummyread },
 	{ .fmt = "%s", .read = dateread },
 };
@@ -77,6 +83,44 @@ dateread(char *buf, size_t len)
 		return -1;
 	strftime(buf, len, "%c", now);
 	return 0;
+}
+
+int
+xkblayoutread(char *buf, size_t len)
+{
+	Display *dpy;
+	XkbStateRec state;
+	XkbRF_VarDefsRec vd;
+	char *tmp, *str, *tok;
+	int i, ret = 0;
+
+	dpy = XOpenDisplay(NULL);
+	if (dpy == NULL) {
+		warnx("cannot open display");
+		return -1;
+	}
+	XkbGetState(dpy, XkbUseCoreKbd, &state);
+	XkbRF_GetNamesProp(dpy, &tmp, &vd);
+	str = strdup(vd.layout);
+	if (str == NULL) {
+		ret = -1;
+		goto out0;
+	}
+	tok = strtok(str, ",");
+	for (i = 0; i < state.group; i++) {
+		tok = strtok(NULL, ",");
+		if (tok == NULL) {
+			warnx("cannot extract layout");
+			ret = -1;
+			goto out1;
+		}
+	}
+	strlcpy(buf, tok, len);
+out1:
+	free(str);
+out0:
+	XCloseDisplay(dpy);
+	return ret;
 }
 
 void
