@@ -1,15 +1,20 @@
 #include <sys/types.h>
+#include <sys/ioctl.h>
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+#include <machine/apmvar.h>
+
 #define LEN(x) (sizeof (x) / sizeof *(x))
 
-int mpdread(char *buf, size_t len);
-int dateread(char *buf, size_t len);
 int dummyread(char *buf, size_t len);
+int mpdread(char *buf, size_t len);
+int battread(char *buf, size_t len);
+int dateread(char *buf, size_t len);
 
 struct ent {
 	char *fmt;
@@ -17,13 +22,46 @@ struct ent {
 } ents[] = {
 	{ .fmt = "[%s]", .read = mpdread },
 	{ .fmt = " ", .read = dummyread },
+	{ .fmt = "%s%%", .read = battread },
+	{ .fmt = " ", .read = dummyread },
 	{ .fmt = "%s", .read = dateread },
 };
+
+int
+dummyread(char *buf, size_t len)
+{
+	buf[0] = '\0';
+	return 0;
+}
 
 int
 mpdread(char *buf, size_t len)
 {
 	strlcpy(buf, "mpd", len);
+	return 0;
+}
+
+int
+battread(char *buf, size_t len)
+{
+	struct apm_power_info info;
+	int ret, fd;
+
+	fd = open("/dev/apm", O_RDONLY);
+	if (fd < 0) {
+		warn("open %s", "/dev/apm");
+		return -1;
+	}
+
+	ret = ioctl(fd, APM_IOC_GETPOWER, &info);
+	if (ret < 0) {
+		warn("APM_IOC_GETPOWER %s", "/dev/apm");
+		close(fd);
+		return -1;
+	}
+	close(fd);
+
+	snprintf(buf, len, "%d", info.battery_life);
 	return 0;
 }
 
@@ -41,21 +79,13 @@ dateread(char *buf, size_t len)
 	return 0;
 }
 
-int
-dummyread(char *buf, size_t len)
-{
-	buf[0] = '\0';
-	return 0;
-}
-
 void
 entcat(char *line, size_t len)
 {
 	char buf[BUFSIZ];
 	char *s, *e;
 	struct ent *ent;
-	int ret;
-	int i;
+	int ret, i;
 
 	s = line;
 	e = line + len;
