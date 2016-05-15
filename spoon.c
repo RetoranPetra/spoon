@@ -60,7 +60,6 @@ battread(char *buf, size_t len)
 		warn("open %s", "/dev/apm");
 		return -1;
 	}
-
 	ret = ioctl(fd, APM_IOC_GETPOWER, &info);
 	if (ret < 0) {
 		warn("APM_IOC_GETPOWER %s", "/dev/apm");
@@ -68,7 +67,6 @@ battread(char *buf, size_t len)
 		return -1;
 	}
 	close(fd);
-
 	snprintf(buf, len, "%d", info.battery_life);
 	return 0;
 }
