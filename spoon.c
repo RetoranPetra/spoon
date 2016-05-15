@@ -25,10 +25,10 @@ struct ent {
 	int (*read)(char *, size_t);
 } ents[] = {
 	/* reorder this if you want */
-	{ .fmt = " [%s]", .read = mpdread },
-	{ .fmt = " [%s]", .read = xkblayoutread },
-	{ .fmt = " [%s%%]", .read = battread },
-	{ .fmt = " %s", .read = dateread },
+	{ .fmt = "[%s] ", .read = mpdread },
+	{ .fmt = "[%s] ", .read = xkblayoutread },
+	{ .fmt = "[%s%%] ", .read = battread },
+	{ .fmt = "%s", .read = dateread },
 };
 
 int
