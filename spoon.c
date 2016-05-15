@@ -23,13 +23,11 @@ struct ent {
 	char *fmt;
 	int (*read)(char *, size_t);
 } ents[] = {
-	{ .fmt = "[%s]", .read = mpdread },
-	{ .fmt = " ", .read = dummyread },
-	{ .fmt = "%s%%", .read = battread },
-	{ .fmt = " ", .read = dummyread },
-	{ .fmt = "[%s]", .read = xkblayoutread },
-	{ .fmt = " ", .read = dummyread },
-	{ .fmt = "%s", .read = dateread },
+	/* reorder this if you want */
+	{ .fmt = " [%s]", .read = mpdread },
+	{ .fmt = " [%s]", .read = xkblayoutread },
+	{ .fmt = " [%s%%]", .read = battread },
+	{ .fmt = " %s", .read = dateread },
 };
 
 int
