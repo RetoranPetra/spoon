@@ -108,6 +108,7 @@ xkblayoutread(char *buf, size_t len)
 	}
 	XkbGetState(dpy, XkbUseCoreKbd, &state);
 	if (XkbRF_GetNamesProp(dpy, &tmp, &vd) == 0){
+		warnx("cannot extract keyboard properties");
 		ret = -1;
 		goto out0;
 	}
