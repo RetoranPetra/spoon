@@ -185,7 +185,7 @@ entcat(char *line, size_t len)
 }
 
 void
-xsetroot(void)
+loop(void)
 {
 	char line[BUFSIZ];
 	Display *dpy;
@@ -209,6 +209,6 @@ xsetroot(void)
 int
 main(void)
 {
-	xsetroot();
+	loop();
 	return 0;
 }
