@@ -109,11 +109,14 @@ xkblayoutread(char *buf, size_t len)
 		return -1;
 	}
 	XkbGetState(dpy, XkbUseCoreKbd, &state);
-	XkbRF_GetNamesProp(dpy, &tmp, &vd);
+	if (XkbRF_GetNamesProp(dpy, &tmp, &vd) == 0){
+		ret = -1;
+		goto out0;
+	}
 	str = strdup(vd.layout);
 	if (str == NULL) {
 		ret = -1;
-		goto out0;
+		goto out1;
 	}
 	tok = strtok(str, ",");
 	for (i = 0; i < state.group; i++) {
@@ -121,12 +124,14 @@ xkblayoutread(char *buf, size_t len)
 		if (tok == NULL) {
 			warnx("cannot extract layout");
 			ret = -1;
-			goto out1;
+			goto out2;
 		}
 	}
 	strlcpy(buf, tok, len);
-out1:
+out2:
 	free(str);
+out1:
+	XFree(vd.options);
 out0:
 	XCloseDisplay(dpy);
 	return ret;
