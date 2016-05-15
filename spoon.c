@@ -100,7 +100,7 @@ xkblayoutread(char *buf, size_t len)
 	Display *dpy;
 	XkbStateRec state;
 	XkbRF_VarDefsRec vd;
-	char *tmp, *str, *tok;
+	char *tmp = NULL, *str, *tok;
 	int i, ret = 0;
 
 	dpy = XOpenDisplay(NULL);
@@ -131,6 +131,7 @@ xkblayoutread(char *buf, size_t len)
 out2:
 	free(str);
 out1:
+	free(tmp);
 	XFree(vd.options);
 out0:
 	XCloseDisplay(dpy);
