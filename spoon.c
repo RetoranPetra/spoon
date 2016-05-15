@@ -1,14 +1,10 @@
 #include <sys/types.h>
-#include <sys/ioctl.h>
 
 #include <err.h>
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
-#include <machine/apmvar.h>
 
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKBrules.h>
@@ -48,6 +44,11 @@ mpdread(char *buf, size_t len)
 	return 0;
 }
 
+#ifdef __OpenBSD__
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <machine/apmvar.h>
+
 int
 battread(char *buf, size_t len)
 {
@@ -71,6 +72,13 @@ battread(char *buf, size_t len)
 	snprintf(buf, len, "%d", info.battery_life);
 	return 0;
 }
+#else
+int
+battread(char *buf, size_t len)
+{
+	return dummyread(buf, len);
+}
+#endif
 
 int
 dateread(char *buf, size_t len)
