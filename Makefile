@@ -1,7 +1,7 @@
 PREFIX = /usr/local
-CFLAGS = -I/usr/X11R6/include
-LDFLAGS = -L/usr/X11R6/lib
-LDLIBS = -lxkbfile -lX11
+CFLAGS = -I/usr/X11R6/include -I/usr/local/include
+LDFLAGS = -L/usr/X11R6/lib -L/usr/local/lib
+LDLIBS = -lxkbfile -lX11 -lmpdclient
 OBJ = spoon.o
 BIN = spoon
 
