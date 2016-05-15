@@ -201,7 +201,7 @@ loop(void)
 	for (;;) {
 		entcat(line, sizeof(line));
 		XStoreName(dpy, root, line);
-		XFlush(dpy);
+		XSync(dpy, False);
 		sleep(1);
 	}
 }
