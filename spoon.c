@@ -103,7 +103,7 @@ battread(char *buf, size_t len)
 int
 battread(char *buf, size_t len)
 {
-	return dummyread(buf, len);
+	return -1;
 }
 #endif
 
