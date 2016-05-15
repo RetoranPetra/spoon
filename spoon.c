@@ -189,18 +189,14 @@ loop(void)
 {
 	char line[BUFSIZ];
 	Display *dpy;
-	int screen;
-	Window root;
 
 	dpy = XOpenDisplay(NULL);
 	if (dpy == NULL)
 		errx(1, "cannot open display");
-	screen = DefaultScreen(dpy);
-	root = RootWindow(dpy, screen);
 
 	for (;;) {
 		entcat(line, sizeof(line));
-		XStoreName(dpy, root, line);
+		XStoreName(dpy, DefaultRootWindow(dpy), line);
 		XSync(dpy, False);
 		sleep(1);
 	}
