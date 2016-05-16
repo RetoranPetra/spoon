@@ -56,7 +56,6 @@ mpdread(char *buf, size_t len)
 	mpd_send_current_song(conn);
 	song = mpd_recv_song(conn);
 	if (song == NULL) {
-		warnx("cannot recv mpd song");
 		ret = -1;
 		goto out;
 	}
