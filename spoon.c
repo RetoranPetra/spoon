@@ -17,6 +17,7 @@
 int dummyread(char *buf, size_t len);
 int mpdread(char *buf, size_t len);
 int battread(char *buf, size_t len);
+int wifiread(char *buf, size_t len);
 int dateread(char *buf, size_t len);
 int xkblayoutread(char *buf, size_t len);
 
@@ -28,6 +29,7 @@ struct ent {
 	{ .fmt = "[%s] ", .read = mpdread },
 	{ .fmt = "[%s] ", .read = xkblayoutread },
 	{ .fmt = "[%s%%] ", .read = battread },
+	{ .fmt = "[%s%%] ", .read = wifiread },
 	{ .fmt = "%s", .read = dateread },
 };
 
@@ -74,8 +76,19 @@ out:
 }
 
 #ifdef __OpenBSD__
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <sys/ioctl.h>
+
+#include <net/if.h>
+#include <net/if_media.h>
+#include <net80211/ieee80211.h>
+#include <net80211/ieee80211_ioctl.h>
+
 #include <fcntl.h>
+#include <ifaddrs.h>
+#include <limits.h>
+
 #include <machine/apmvar.h>
 
 int
@@ -99,9 +112,94 @@ battread(char *buf, size_t len)
 	snprintf(buf, len, "%d", info.battery_life);
 	return 0;
 }
+
+int
+wifiread(char *buf, size_t len)
+{
+	struct ifaddrs *ifa, *ifas;
+	struct ifmediareq ifmr;
+	struct ieee80211_nodereq nr;
+	struct ieee80211_bssid bssid;
+	int s, ibssid, quality;
+
+	if (getifaddrs(&ifas) < 0) {
+		warn("getifaddrs");
+		return -1;
+	}
+
+	for (ifa = ifas; ifa; ifa = ifa->ifa_next) {
+		s = socket(AF_INET, SOCK_DGRAM, 0);
+		if (s < 0) {
+			warn("socket");
+			continue;
+		}
+
+		memset(&ifmr, 0, sizeof(ifmr));
+		strlcpy(ifmr.ifm_name, ifa->ifa_name, IF_NAMESIZE);
+		if (ioctl(s, SIOCGIFMEDIA, (caddr_t)&ifmr) < 0) {
+			close(s);
+			continue;
+		}
+
+		if ((ifmr.ifm_active & IFM_IEEE80211) == 0) {
+			close(s);
+			continue;
+		}
+
+		if ((ifmr.ifm_active & IFM_IEEE80211_HOSTAP) != 0) {
+			close(s);
+			continue;
+		}
+
+		memset(&bssid, 0, sizeof(bssid));
+		strlcpy(bssid.i_name, ifa->ifa_name, sizeof(bssid.i_name));
+		ibssid = ioctl(s, SIOCG80211BSSID, &bssid);
+		if (ibssid < 0) {
+			close(s);
+			continue;
+		}
+
+		memset(&nr, 0, sizeof(nr));
+		memcpy(&nr.nr_macaddr, bssid.i_bssid, sizeof(nr.nr_macaddr));
+		strlcpy(nr.nr_ifname, ifa->ifa_name, sizeof(nr.nr_ifname));
+		if (ioctl(s, SIOCG80211NODE, &nr) < 0) {
+			close(s);
+			continue;
+		}
+
+		if (nr.nr_rssi == 0) {
+			close(s);
+			continue;
+		}
+
+		if (nr.nr_max_rssi == 0) {
+			if (nr.nr_rssi <= -100)
+				quality = 0;
+			else if (nr.nr_rssi >= -50)
+				quality = 100;
+			else
+				quality = 2 * (nr.nr_rssi + 100);
+		} else {
+			quality = IEEE80211_NODEREQ_RSSI(&nr);
+		}
+
+		snprintf(buf, len, "%u", quality);
+		break;
+	}
+	freeifaddrs(ifas);
+	if (ifa)
+		return 0;
+	return -1;
+}
 #else
 int
 battread(char *buf, size_t len)
+{
+	return -1;
+}
+
+int
+wifiread(char *buf, size_t len)
 {
 	return -1;
 }
