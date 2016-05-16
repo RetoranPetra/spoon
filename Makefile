@@ -1,6 +1,6 @@
 VERSION = 0.1
 PREFIX = /usr/local
-CFLAGS = -I/usr/X11R6/include -I/usr/local/include
+CPPFLAGS = -I/usr/X11R6/include -I/usr/local/include
 LDFLAGS = -L/usr/X11R6/lib -L/usr/local/lib
 LDLIBS = -lxkbfile -lX11 -lmpdclient
 DISTFILES = spoon.c Makefile LICENSE
