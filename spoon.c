@@ -103,7 +103,7 @@ cpuread(char *buf, size_t len)
 	sz = sizeof(cpuspeed);
 	if (sysctl(mib, 2, &cpuspeed, &sz, NULL, 0) < 0)
 		return -1;
-	snprintf(buf, len, "%d", cpuspeed);
+	snprintf(buf, len, "%4d", cpuspeed);
 	return 0;
 }
 
