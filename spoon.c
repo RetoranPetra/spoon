@@ -165,11 +165,10 @@ wifiread(char *buf, size_t len)
 			close(s);
 			continue;
 		}
+		close(s);
 
-		if (nr.nr_rssi == 0) {
-			close(s);
+		if (nr.nr_rssi == 0)
 			continue;
-		}
 
 		if (nr.nr_max_rssi == 0) {
 			if (nr.nr_rssi <= -100)
