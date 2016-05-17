@@ -28,8 +28,8 @@ struct ent {
 	/* reorder this if you want */
 	{ .fmt = "[%s] ", .read = mpdread },
 	{ .fmt = "[%s] ", .read = xkblayoutread },
-	{ .fmt = "[%s%%] ", .read = battread },
-	{ .fmt = "[%s%%] ", .read = wifiread },
+	{ .fmt = "%s ", .read = battread },
+	{ .fmt = "%s ", .read = wifiread },
 	{ .fmt = "%s", .read = dateread },
 };
 
@@ -95,6 +95,8 @@ battread(char *buf, size_t len)
 {
 	struct apm_power_info info;
 	int ret, fd;
+	char *icon;
+	char c;
 
 	fd = open("/dev/apm", O_RDONLY);
 	if (fd < 0) {
@@ -108,7 +110,17 @@ battread(char *buf, size_t len)
 		return -1;
 	}
 	close(fd);
-	snprintf(buf, len, "%d", info.battery_life);
+	c = info.ac_state == APM_AC_ON ? '>' : '<';
+	if (info.battery_life == 100)
+		snprintf(buf, len, "[////]=");
+	else if (info.battery_life >= 75)
+		snprintf(buf, len, "[///%c]=", c);
+	else if (info.battery_life >= 50)
+		snprintf(buf, len, "[//%c%c]=", c, c);
+	else if (info.battery_life >= 25)
+		snprintf(buf, len, "[/%c%c%c]=", c, c, c);
+	else
+		snprintf(buf, len, "[%c%c%c%c]=", c, c, c, c);
 	return 0;
 }
 
@@ -120,6 +132,7 @@ wifiread(char *buf, size_t len)
 	struct ieee80211_nodereq nr;
 	struct ieee80211_bssid bssid;
 	int s, ibssid, quality;
+	char *icon;
 
 	if (getifaddrs(&ifas) < 0) {
 		warn("getifaddrs");
@@ -181,7 +194,17 @@ wifiread(char *buf, size_t len)
 			quality = IEEE80211_NODEREQ_RSSI(&nr);
 		}
 
-		snprintf(buf, len, "%u", quality);
+		if (quality == 100)
+			icon = "::";
+		else if (quality >= 75)
+			icon = ":.";
+		else if (quality >= 50)
+			icon = "..";
+		else if (quality >= 25)
+			icon = ". ";
+		else
+			icon = "  ";
+		snprintf(buf, len, "%s", icon);
 		break;
 	}
 	freeifaddrs(ifas);
