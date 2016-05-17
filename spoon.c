@@ -16,6 +16,7 @@
 
 int dummyread(char *buf, size_t len);
 int mpdread(char *buf, size_t len);
+int cpuread(char *buf, size_t len);
 int battread(char *buf, size_t len);
 int wifiread(char *buf, size_t len);
 int dateread(char *buf, size_t len);
@@ -28,6 +29,7 @@ struct ent {
 	/* reorder this if you want */
 	{ .fmt = "[%s] ", .read = mpdread },
 	{ .fmt = "[%s] ", .read = xkblayoutread },
+	{ .fmt = "[%sMHz] ", .read = cpuread },
 	{ .fmt = "%s ", .read = battread },
 	{ .fmt = "%s ", .read = wifiread },
 	{ .fmt = "%s", .read = dateread },
@@ -77,6 +79,7 @@ out:
 #ifdef __OpenBSD__
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/sysctl.h>
 #include <sys/ioctl.h>
 
 #include <net/if.h>
@@ -89,6 +92,21 @@ out:
 #include <limits.h>
 
 #include <machine/apmvar.h>
+
+int
+cpuread(char *buf, size_t len)
+{
+	int mib[2], cpuspeed;
+	size_t len;
+
+	mib[0] = CTL_HW;
+	mib[1] = HW_CPUSPEED;
+	len = sizeof(cpuspeed);
+	if (sysctl(mib, 2, &cpuspeed, &len, NULL, 0) < 0)
+		return -1;
+	snprintf(buf, len, "%d", cpuspeed);
+	return 0;
+}
 
 int
 battread(char *buf, size_t len)
@@ -213,6 +231,12 @@ wifiread(char *buf, size_t len)
 	return -1;
 }
 #else
+int
+cpuread(char *buf, size_t len)
+{
+	return -1;
+}
+
 int
 battread(char *buf, size_t len)
 {
