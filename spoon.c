@@ -96,12 +96,12 @@ int
 cpuread(char *buf, size_t len)
 {
 	int mib[2], cpuspeed;
-	size_t len;
+	size_t sz;
 
 	mib[0] = CTL_HW;
 	mib[1] = HW_CPUSPEED;
-	len = sizeof(cpuspeed);
-	if (sysctl(mib, 2, &cpuspeed, &len, NULL, 0) < 0)
+	sz = sizeof(cpuspeed);
+	if (sysctl(mib, 2, &cpuspeed, &sz, NULL, 0) < 0)
 		return -1;
 	snprintf(buf, len, "%d", cpuspeed);
 	return 0;
