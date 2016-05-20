@@ -17,6 +17,7 @@
 int dummyread(char *buf, size_t len);
 int mpdread(char *buf, size_t len);
 int cpuread(char *buf, size_t len);
+int tempread(char *buf, size_t len);
 int battread(char *buf, size_t len);
 int wifiread(char *buf, size_t len);
 int dateread(char *buf, size_t len);
@@ -30,6 +31,7 @@ struct ent {
 	{ .fmt = "[%s] ", .read = mpdread },
 	{ .fmt = "[%s] ", .read = xkblayoutread },
 	{ .fmt = "[%sMHz] ", .read = cpuread },
+	{ .fmt = "[%s] ", .read = tempread },
 	{ .fmt = "%s ", .read = battread },
 	{ .fmt = "%s ", .read = wifiread },
 	{ .fmt = "%s", .read = dateread },
@@ -79,6 +81,7 @@ out:
 #ifdef __OpenBSD__
 #include <sys/socket.h>
 #include <sys/sysctl.h>
+#include <sys/sensors.h>
 #include <sys/ioctl.h>
 
 #include <net/if.h>
@@ -104,6 +107,25 @@ cpuread(char *buf, size_t len)
 	if (sysctl(mib, 2, &cpuspeed, &sz, NULL, 0) < 0)
 		return -1;
 	snprintf(buf, len, "%4d", cpuspeed);
+	return 0;
+}
+
+int
+tempread(char *buf, size_t len)
+{
+	int mib[5];
+	struct sensor temp;
+	size_t sz;
+
+	mib[0] = CTL_HW;
+	mib[1] = HW_SENSORS;
+	mib[2] = 0; /* cpu0 */
+	mib[3] = SENSOR_TEMP;
+	mib[4] = 0; /* temp0 */
+	sz = sizeof(temp);
+	if (sysctl(mib, 5, &temp, &sz, NULL, 0) == -1)
+		return -1;
+	snprintf(buf, len, "%ddegC", (temp.value - 273150000) / 1000000);
 	return 0;
 }
 
@@ -232,6 +254,12 @@ wifiread(char *buf, size_t len)
 #else
 int
 cpuread(char *buf, size_t len)
+{
+	return -1;
+}
+
+int
+tempread(char *buf, size_t len)
 {
 	return -1;
 }
