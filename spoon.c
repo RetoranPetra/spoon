@@ -30,7 +30,7 @@ struct ent {
 	/* reorder this if you want */
 	{ .fmt = "[%s] ", .read = mpdread },
 	{ .fmt = "[%s] ", .read = xkblayoutread },
-	{ .fmt = "[%sMHz] ", .read = cpuread },
+	{ .fmt = "[%s] ", .read = cpuread },
 	{ .fmt = "[%s] ", .read = tempread },
 	{ .fmt = "%s ", .read = battread },
 	{ .fmt = "%s ", .read = wifiread },
@@ -106,7 +106,7 @@ cpuread(char *buf, size_t len)
 	sz = sizeof(cpuspeed);
 	if (sysctl(mib, 2, &cpuspeed, &sz, NULL, 0) < 0)
 		return -1;
-	snprintf(buf, len, "%4d", cpuspeed);
+	snprintf(buf, len, "%4dMHz", cpuspeed);
 	return 0;
 }
 
