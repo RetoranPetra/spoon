@@ -177,31 +177,26 @@ wifiread(char *buf, size_t len)
 		warn("getifaddrs");
 		return -1;
 	}
-
 	for (ifa = ifas; ifa; ifa = ifa->ifa_next) {
 		s = socket(AF_INET, SOCK_DGRAM, 0);
 		if (s < 0) {
 			warn("socket");
 			continue;
 		}
-
 		memset(&ifmr, 0, sizeof(ifmr));
 		strlcpy(ifmr.ifm_name, ifa->ifa_name, IF_NAMESIZE);
 		if (ioctl(s, SIOCGIFMEDIA, (caddr_t)&ifmr) < 0) {
 			close(s);
 			continue;
 		}
-
 		if ((ifmr.ifm_active & IFM_IEEE80211) == 0) {
 			close(s);
 			continue;
 		}
-
 		if ((ifmr.ifm_active & IFM_IEEE80211_HOSTAP) != 0) {
 			close(s);
 			continue;
 		}
-
 		memset(&bssid, 0, sizeof(bssid));
 		strlcpy(bssid.i_name, ifa->ifa_name, sizeof(bssid.i_name));
 		ibssid = ioctl(s, SIOCG80211BSSID, &bssid);
@@ -209,7 +204,6 @@ wifiread(char *buf, size_t len)
 			close(s);
 			continue;
 		}
-
 		memset(&nr, 0, sizeof(nr));
 		memcpy(&nr.nr_macaddr, bssid.i_bssid, sizeof(nr.nr_macaddr));
 		strlcpy(nr.nr_ifname, ifa->ifa_name, sizeof(nr.nr_ifname));
@@ -218,10 +212,8 @@ wifiread(char *buf, size_t len)
 			continue;
 		}
 		close(s);
-
 		if (nr.nr_rssi == 0)
 			continue;
-
 		if (nr.nr_max_rssi == 0) {
 			if (nr.nr_rssi <= -100)
 				quality = 0;
@@ -232,7 +224,6 @@ wifiread(char *buf, size_t len)
 		} else {
 			quality = IEEE80211_NODEREQ_RSSI(&nr);
 		}
-
 		if (quality == 100)
 			icon = "::";
 		else if (quality >= 75)
@@ -363,7 +354,6 @@ loop(void)
 	dpy = XOpenDisplay(NULL);
 	if (dpy == NULL)
 		errx(1, "cannot open display");
-
 	for (;;) {
 		entcat(line, sizeof(line));
 		XStoreName(dpy, DefaultRootWindow(dpy), line);
