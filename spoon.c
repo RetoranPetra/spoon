@@ -19,6 +19,7 @@ int mpdread(char *buf, size_t len);
 int cpuread(char *buf, size_t len);
 int tempread(char *buf, size_t len);
 int battread(char *buf, size_t len);
+int mixread(char *buf, size_t len);
 int wifiread(char *buf, size_t len);
 int dateread(char *buf, size_t len);
 int xkblayoutread(char *buf, size_t len);
@@ -29,6 +30,7 @@ struct ent {
 } ents[] = {
 	/* reorder this if you want */
 	{ .fmt = "[%s] ", .read = mpdread },
+	{ .fmt = "[%s] ", .read = mixread },
 	{ .fmt = "[%s] ", .read = xkblayoutread },
 	{ .fmt = "[%s] ", .read = cpuread },
 	{ .fmt = "[%s] ", .read = tempread },
@@ -83,6 +85,7 @@ out:
 #include <sys/sysctl.h>
 #include <sys/sensors.h>
 #include <sys/ioctl.h>
+#include <sys/audioio.h>
 
 #include <net/if.h>
 #include <net/if_media.h>
@@ -127,6 +130,62 @@ tempread(char *buf, size_t len)
 		return -1;
 	snprintf(buf, len, "%ddegC", (temp.value - 273150000) / 1000000);
 	return 0;
+}
+
+int
+mixread(char *buf, size_t len)
+{
+	mixer_devinfo_t dinfo;
+	mixer_ctrl_t mctl;
+	int fd, master, ret = 0, i = -1;
+
+	fd = open("/dev/mixer", O_RDONLY);
+	if (fd == -1) {
+		warn("open %s", "/dev/mixer");
+		return -1;
+	}
+	/* outputs */
+	for (dinfo.index = 0; ; dinfo.index++) {
+		ret = ioctl(fd, AUDIO_MIXER_DEVINFO, &dinfo);
+		if (ret == -1) {
+			warn("AUDIO_MIXER_DEVINFO %s", "/dev/mixer");
+			close(fd);
+			return -1;
+		}
+		if (dinfo.type == AUDIO_MIXER_CLASS &&
+		    strcmp(dinfo.label.name, AudioCoutputs) == 0) {
+			i = dinfo.index;
+			break;
+		}
+	}
+	if (i == -1) {
+		warnx("no outputs mixer class: %s", "/dev/mixer");
+		goto out;
+	}
+	/* outputs.master */
+	for (; ; dinfo.index++) {
+		ret = ioctl(fd, AUDIO_MIXER_DEVINFO, &dinfo);
+		if (ret == -1) {
+			warn("AUDIO_MIXER_DEVINFO %s", "/dev/mixer");
+			goto out;
+		}
+		if (dinfo.type == AUDIO_MIXER_VALUE &&
+		    dinfo.prev == AUDIO_MIXER_LAST &&
+		    dinfo.mixer_class == i &&
+		    strcmp(dinfo.label.name, AudioNmaster) == 0)
+			break;
+	}
+	mctl.dev = dinfo.index;
+	ret = ioctl(fd, AUDIO_MIXER_READ, &mctl);
+	if (ret == -1) {
+		warn("AUDIO_MIXER_READ %s", "/dev/mixer");
+		goto out;
+	}
+	master = mctl.un.value.level[0] * 100 / 255;
+	snprintf(buf, len, "%d%%", master);
+out:
+	close(fd);
+	return ret;
 }
 
 int
@@ -251,6 +310,12 @@ cpuread(char *buf, size_t len)
 
 int
 tempread(char *buf, size_t len)
+{
+	return -1;
+}
+
+int
+mixread(char *buf, size_t len)
 {
 	return -1;
 }
