@@ -27,17 +27,9 @@ int xkblayoutread(char *buf, size_t len);
 struct ent {
 	char *fmt;
 	int (*read)(char *, size_t);
-} ents[] = {
-	/* reorder this if you want */
-	{ .fmt = "[%s] ", .read = mpdread },
-	{ .fmt = "[%s] ", .read = mixread },
-	{ .fmt = "[%s] ", .read = cpuread },
-	{ .fmt = "[%s] ", .read = tempread },
-	{ .fmt = "%s ", .read = battread },
-	{ .fmt = "%s ", .read = wifiread },
-	{ .fmt = "[%s] ", .read = xkblayoutread },
-	{ .fmt = "%s", .read = dateread },
 };
+
+#include "config.h"
 
 int
 dummyread(char *buf, size_t len)

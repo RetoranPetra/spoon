@@ -3,11 +3,16 @@ PREFIX = /usr/local
 CPPFLAGS = -I/usr/X11R6/include -I/usr/local/include
 LDFLAGS = -L/usr/X11R6/lib -L/usr/local/lib
 LDLIBS = -lxkbfile -lX11 -lmpdclient
-DISTFILES = spoon.c Makefile LICENSE
+DISTFILES = spoon.c config.def.h Makefile LICENSE
 OBJ = spoon.o
 BIN = spoon
 
 all: $(BIN)
+
+spoon.o: config.h
+
+config.h:
+	cp config.def.h $@
 
 clean:
 	rm -f $(OBJ) $(BIN) $(BIN)-$(VERSION).tar.gz
