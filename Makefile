@@ -1,4 +1,4 @@
-VERSION = 0.1
+VERSION = 0.2
 PREFIX = /usr/local
 CPPFLAGS = -I/usr/X11R6/include -I/usr/local/include
 LDFLAGS = -L/usr/X11R6/lib -L/usr/local/lib
