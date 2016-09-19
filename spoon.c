@@ -136,13 +136,13 @@ mixread(char *buf, size_t len)
 		warn("open %s", "/dev/mixer");
 		return -1;
 	}
+	dinfo.index = 0;
 	/* outputs */
-	for (dinfo.index = 0; ; dinfo.index++) {
+	for (; ; dinfo.index++) {
 		ret = ioctl(fd, AUDIO_MIXER_DEVINFO, &dinfo);
 		if (ret == -1) {
 			warn("AUDIO_MIXER_DEVINFO %s", "/dev/mixer");
-			close(fd);
-			return -1;
+			goto out;
 		}
 		if (dinfo.type == AUDIO_MIXER_CLASS &&
 		    strcmp(dinfo.label.name, AudioCoutputs) == 0) {
