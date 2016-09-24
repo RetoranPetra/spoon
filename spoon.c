@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKBrules.h>
