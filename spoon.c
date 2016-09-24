@@ -12,6 +12,8 @@
 
 #include <mpd/client.h>
 
+#include "util.h"
+
 #define LEN(x) (sizeof (x) / sizeof *(x))
 
 int dummyread(char *buf, size_t len);

@@ -4,7 +4,7 @@ CPPFLAGS = -I/usr/X11R6/include -I/usr/local/include
 LDFLAGS = -L/usr/X11R6/lib -L/usr/local/lib
 LDLIBS = -lxkbfile -lX11 -lmpdclient
 DISTFILES = spoon.c config.def.h Makefile LICENSE
-OBJ = spoon.o
+OBJ = spoon.o strlcpy.o strlcat.o
 BIN = spoon
 
 all: $(BIN)
