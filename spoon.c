@@ -77,6 +77,7 @@ out:
 
 #ifdef __OpenBSD__
 #include <sys/socket.h>
+#include <sys/select.h>
 #include <sys/sysctl.h>
 #include <sys/sensors.h>
 #include <sys/ioctl.h>
