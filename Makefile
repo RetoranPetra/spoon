@@ -4,8 +4,12 @@ CPPFLAGS = -I/usr/X11R6/include -I/usr/local/include
 LDFLAGS = -L/usr/X11R6/lib -L/usr/local/lib
 LDLIBS = -lxkbfile -lX11 -lmpdclient
 DISTFILES = spoon.c config.def.h Makefile LICENSE
-OBJ = spoon.o strlcpy.o strlcat.o
+OBJ = spoon.o batt.o strlcpy.o strlcat.o
 BIN = spoon
+
+# Linux
+#CPPFLAGS += -DPATH_BAT_CAP=\"/sys/class/power_supply/BAT0/capacity\"
+#CPPFLAGS += -DPATH_AC_ONLINE=\"/sys/class/power_supply/AC/online\"
 
 all: $(BIN)
 
