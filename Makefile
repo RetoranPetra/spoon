@@ -3,7 +3,8 @@ PREFIX = /usr/local
 CPPFLAGS = -I/usr/X11R6/include -I/usr/local/include
 LDFLAGS = -L/usr/X11R6/lib -L/usr/local/lib
 LDLIBS = -lxkbfile -lX11 -lmpdclient
-DISTFILES = spoon.c config.def.h Makefile LICENSE
+DISTFILES = spoon.c batt.c strlcpy.c strlcat.c util.h config.def.h\
+            Makefile LICENSE
 OBJ = spoon.o batt.o strlcpy.o strlcat.o
 BIN = spoon
 
