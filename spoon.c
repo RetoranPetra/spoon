@@ -58,10 +58,9 @@ mpdread(char *buf, size_t len)
 	}
 	mpd_send_current_song(conn);
 	song = mpd_recv_song(conn);
-	if (song == NULL) {
-		ret = -1;
-		goto out;
-	}
+	/* if no song is playing, reuse connection next time */
+	if (song == NULL)
+		return -1;
 	artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
 	title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
 	if (artist != NULL && title != NULL) {
