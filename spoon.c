@@ -46,7 +46,7 @@ mpdread(char *buf, size_t len)
 {
 	static struct mpd_connection *conn;
 	struct mpd_song *song;
-	const char *artist, *title;
+	const char *artist, *title, *name;
 	int ret = 0;
 
 	if (conn == NULL) {
@@ -69,8 +69,13 @@ mpdread(char *buf, size_t len)
 	} else if (title != NULL) {
 		strlcpy(buf, title, len);
 	} else {
-		ret = -1;
-		goto out;
+		name = mpd_song_get_uri(song);
+		if (name == NULL) {
+			mpd_song_free(song);
+			ret = -1;
+			goto out;
+		}
+		strlcpy(buf, name, len);
 	}
 	mpd_song_free(song);
 	if (!mpd_response_finish(conn)) {
