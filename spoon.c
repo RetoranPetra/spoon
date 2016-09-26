@@ -51,9 +51,11 @@ mpdread(char *buf, size_t len)
 
 	if (conn == NULL) {
 		conn = mpd_connection_new(NULL, 0, 0);
+		if (conn == NULL)
+			return -1;
 		if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS) {
 			warnx("cannot connect to mpd");
-			return -1;
+			goto out;
 		}
 	}
 	mpd_send_current_song(conn);
