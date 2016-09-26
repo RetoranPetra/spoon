@@ -54,7 +54,7 @@ mpdread(char *buf, size_t len)
 		if (conn == NULL)
 			return -1;
 		if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS) {
-			warnx("cannot connect to mpd");
+			ret = -1;
 			goto out;
 		}
 	}
@@ -90,6 +90,7 @@ mpdread(char *buf, size_t len)
 	}
 	return 0;
 out:
+	warnx("failed to talk to mpd");
 	mpd_connection_free(conn);
 	conn = NULL;
 	return ret;
