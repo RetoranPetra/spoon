@@ -44,15 +44,17 @@ dummyread(char *buf, size_t len)
 int
 mpdread(char *buf, size_t len)
 {
-	struct mpd_connection *conn;
+	static struct mpd_connection *conn;
 	struct mpd_song *song;
 	const char *artist, *title;
 	int ret = 0;
 
-	conn = mpd_connection_new(NULL, 0, 0);
-	if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS) {
-		warnx("cannot connect to mpd");
-		return -1;
+	if (conn == NULL) {
+		conn = mpd_connection_new(NULL, 0, 0);
+		if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS) {
+			warnx("cannot connect to mpd");
+			return -1;
+		}
 	}
 	mpd_send_current_song(conn);
 	song = mpd_recv_song(conn);
@@ -62,16 +64,23 @@ mpdread(char *buf, size_t len)
 	}
 	artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
 	title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
-	if (artist != NULL && title != NULL)
+	if (artist != NULL && title != NULL) {
 		snprintf(buf, len, "%s - %s", artist, title);
-	else if (title != NULL)
+	} else if (title != NULL) {
 		strlcpy(buf, title, len);
-	else
+	} else {
 		ret = -1;
+		goto out;
+	}
 	mpd_song_free(song);
-	mpd_response_finish(conn);
+	if (!mpd_response_finish(conn)) {
+		ret = -1;
+		goto out;
+	}
+	return 0;
 out:
 	mpd_connection_free(conn);
+	conn = NULL;
 	return ret;
 }
 
