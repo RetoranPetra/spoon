@@ -47,25 +47,20 @@ mpdread(char *buf, size_t len)
 	static struct mpd_connection *conn;
 	struct mpd_song *song;
 	const char *artist, *title, *name;
-	int ret = 0;
 
 	if (conn == NULL) {
 		conn = mpd_connection_new(NULL, 0, 0);
 		if (conn == NULL)
 			return -1;
-		if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS) {
-			ret = -1;
+		if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS)
 			goto out;
-		}
 	}
 	mpd_send_current_song(conn);
 	song = mpd_recv_song(conn);
 	/* if no song is playing, reuse connection next time */
 	if (song == NULL) {
-		if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS) {
-			ret = -1;
+		if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS)
 			goto out;
-		}
 		return -1;
 	}
 	artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
@@ -78,22 +73,19 @@ mpdread(char *buf, size_t len)
 		name = mpd_song_get_uri(song);
 		if (name == NULL) {
 			mpd_song_free(song);
-			ret = -1;
 			goto out;
 		}
 		strlcpy(buf, name, len);
 	}
 	mpd_song_free(song);
-	if (!mpd_response_finish(conn)) {
-		ret = -1;
+	if (!mpd_response_finish(conn))
 		goto out;
-	}
 	return 0;
 out:
 	warnx("failed to talk to mpd");
 	mpd_connection_free(conn);
 	conn = NULL;
-	return ret;
+	return -1;
 }
 
 #ifdef __OpenBSD__
