@@ -7,13 +7,15 @@ battprint(char *buf, size_t len, int acon , int life)
 	char c;
 
 	c = acon ? '>' : '<';
-	if (life == 100)
+	if (!acon && life <= 5)
+		snprintf(buf, len, "[!!!!]=");
+	else if (life >= 80)
 		snprintf(buf, len, "[////]=");
-	else if (life >= 75)
+	else if (life >= 60)
 		snprintf(buf, len, "[///%c]=", c);
-	else if (life >= 50)
+	else if (life >= 40)
 		snprintf(buf, len, "[//%c%c]=", c, c);
-	else if (life >= 25)
+	else if (life >= 20)
 		snprintf(buf, len, "[/%c%c%c]=", c, c, c);
 	else
 		snprintf(buf, len, "[%c%c%c%c]=", c, c, c, c);
