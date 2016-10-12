@@ -1,3 +1,4 @@
+#include <err.h>
 #include <stddef.h>
 #include <stdio.h>
 
@@ -24,7 +25,6 @@ battprint(char *buf, size_t len, int acon , int life)
 #ifdef __OpenBSD__
 #include <sys/ioctl.h>
 
-#include <err.h>
 #include <fcntl.h>
 #include <unistd.h>
 

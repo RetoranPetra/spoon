@@ -1,3 +1,4 @@
+#include <err.h>
 #include <stddef.h>
 #include <stdio.h>
 
@@ -29,7 +30,6 @@ wifiprint(char *buf, size_t len, int quality)
 #include <net80211/ieee80211.h>
 #include <net80211/ieee80211_ioctl.h>
 
-#include <err.h>
 #include <ifaddrs.h>
 #include <string.h>
 #include <unistd.h>
