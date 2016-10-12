@@ -1,16 +1,19 @@
 VERSION = 0.2
 PREFIX = /usr/local
-CPPFLAGS = -I/usr/X11R6/include -I/usr/local/include
-LDFLAGS = -L/usr/X11R6/lib -L/usr/local/lib
-LDLIBS = -lxkbfile -lX11 -lmpdclient
 DISTFILES = spoon.c batt.c wifi.c strlcpy.c strlcat.c util.h config.def.h\
-            Makefile LICENSE
+            Makefile LICENSE configure
 OBJ = spoon.o batt.o wifi.o strlcpy.o strlcat.o
 BIN = spoon
 
-# Linux
-#CPPFLAGS += -DPATH_BAT_CAP=\"/sys/class/power_supply/BAT0/capacity\"
-#CPPFLAGS += -DPATH_AC_ONLINE=\"/sys/class/power_supply/AC/online\"
+include config.mk
+
+CPPFLAGS_OpenBSD = -I/usr/X11R6/include -I/usr/local/include
+LDFLAGS_OpenBSD = -L/usr/X11R6/lib -L/usr/local/lib
+CPPFLAGS_Linux = -DPATH_BAT_CAP=\"/sys/class/power_supply/BAT0/capacity\"\
+                 -DPATH_AC_ONLINE=\"/sys/class/power_supply/AC/online\"
+CPPFLAGS = $(CPPFLAGS_$(UNAME))
+LDFLAGS = $(LDFLAGS_$(UNAME))
+LDLIBS = -lxkbfile -lX11 -lmpdclient
 
 all: $(BIN)
 
