@@ -1,8 +1,9 @@
 VERSION = 0.2
 PREFIX = /usr/local
-DISTFILES = spoon.c batt.c wifi.c strlcpy.c strlcat.c util.h config.def.h\
+DISTFILES = spoon.c batt.c wifi.c cpu.c temp.c mix.c\
+            strlcpy.c strlcat.c util.h config.def.h\
             Makefile LICENSE configure
-OBJ = spoon.o batt.o wifi.o strlcpy.o strlcat.o
+OBJ = spoon.o batt.o wifi.o cpu.o temp.o mix.o strlcpy.o strlcat.o
 BIN = spoon
 
 include config.mk
