@@ -1,8 +1,11 @@
 VERSION = 0.2
 PREFIX = /usr/local
 SRC = spoon.c batt.c wifi.c cpu.c temp.c mix.c date.c load.c\
-      strlcpy.c strlcat.c
+      strlcpy.c strlcat.c xkblayout.c mpd.c
+OBJ = spoon.o batt.o wifi.o cpu.o temp.o mix.o date.o load.o\
+      strlcpy.o strlcat.o
 BIN = spoon
+DISTFILES = $(SRC) util.h config.def.h Makefile LICENSE configure
 
 include config.mk
 
@@ -15,14 +18,11 @@ CPPFLAGS = $(CPPFLAGS_$(UNAME))
 LDFLAGS = $(LDFLAGS_$(UNAME))
 LDLIBS = -lX11
 
-SRC += xkblayout.c
+OBJ += xkblayout.o
 LDLIBS += -lxkbfile
 
-SRC += mpd.c
+OBJ += mpd.o
 LDLIBS += -lmpdclient
-
-DISTFILES = $(SRC) util.h config.def.h Makefile LICENSE configure
-OBJ = $(SRC:.c=.o)
 
 all: $(BIN)
 
