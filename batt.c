@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
-static void
+void
 battprint(char *buf, size_t len, int acon , int life)
 {
 	char c;

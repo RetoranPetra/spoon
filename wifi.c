@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
-static void
+void
 wifiprint(char *buf, size_t len, int quality)
 {
 	char *icon;
