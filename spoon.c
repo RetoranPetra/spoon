@@ -9,6 +9,7 @@
 
 int dummyread(char *buf, size_t len);
 int mpdread(char *buf, size_t len);
+int loadread(char *buf, size_t len);
 int cpuread(char *buf, size_t len);
 int tempread(char *buf, size_t len);
 int battread(char *buf, size_t len);
