@@ -1,7 +1,7 @@
 VERSION = 0.2
 PREFIX = /usr/local
 SRC = spoon.c batt.c wifi.c cpu.c temp.c mix.c date.c load.c\
-      strlcpy.c strlcat.c xkblayout.c mpd.c stub.c
+      strlcpy.c strlcat.c stub.c xkblayout.c mpd.c
 OBJ = spoon.o batt.o wifi.o cpu.o temp.o mix.o date.o load.o\
       strlcpy.o strlcat.o stub.o
 BIN = spoon
