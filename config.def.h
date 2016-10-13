@@ -1,3 +1,6 @@
+/* delay between each update in seconds */
+int delay = 1;
+
 struct ent ents[] = {
 	/* reorder this if you want */
 	{ .fmt = "[%s] ", .read = mpdread },

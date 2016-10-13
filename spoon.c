@@ -64,7 +64,7 @@ loop(void)
 		entcat(line, sizeof(line));
 		XStoreName(dpy, DefaultRootWindow(dpy), line);
 		XSync(dpy, False);
-		sleep(1);
+		sleep(delay);
 	}
 }
 
