@@ -1,5 +1,4 @@
 #include <err.h>
-#include <stddef.h>
 #include <stdio.h>
 
 #ifdef __OpenBSD__
