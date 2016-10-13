@@ -23,6 +23,7 @@ wifiprint(char *buf, size_t len, int quality)
 #ifdef __OpenBSD__
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/select.h>
 #include <sys/ioctl.h>
 
 #include <net/if.h>
