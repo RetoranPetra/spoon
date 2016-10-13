@@ -24,7 +24,7 @@ tempread(char *buf, size_t len)
 	snprintf(buf, len, "%ddegC", (temp.value - 273150000) / 1000000);
 	return 0;
 }
-#else
+#elif __linux__
 int
 tempread(char *buf, size_t len)
 {
@@ -40,5 +40,11 @@ tempread(char *buf, size_t len)
 	fclose(fp);
 	snprintf(buf, len, "%ddegC", temp / 1000);
 	return 0;
+}
+#else
+int
+tempread(char *buf, size_t len)
+{
+	return -1;
 }
 #endif
