@@ -7,15 +7,15 @@
 
 #define LEN(x) (sizeof (x) / sizeof *(x))
 
-int dummyread(char *buf, size_t len);
-int mpdread(char *buf, size_t len);
-int loadread(char *buf, size_t len);
-int cpuread(char *buf, size_t len);
-int tempread(char *buf, size_t len);
 int battread(char *buf, size_t len);
-int mixread(char *buf, size_t len);
-int wifiread(char *buf, size_t len);
+int cpuread(char *buf, size_t len);
 int dateread(char *buf, size_t len);
+int dummyread(char *buf, size_t len);
+int loadread(char *buf, size_t len);
+int mixread(char *buf, size_t len);
+int mpdread(char *buf, size_t len);
+int tempread(char *buf, size_t len);
+int wifiread(char *buf, size_t len);
 int xkblayoutread(char *buf, size_t len);
 
 struct ent {
