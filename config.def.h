@@ -1,5 +1,7 @@
 /* delay between each update in seconds */
 int delay = 1;
+/* format for dateread */
+char timeformat[] = "%a %d %b %Y %H:%M %Z";
 
 struct ent ents[] = {
 	/* reorder this if you want */

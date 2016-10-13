@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <time.h>
 
+extern char timeformat[];
+
 int
 dateread(char *buf, size_t len)
 {
@@ -14,6 +16,6 @@ dateread(char *buf, size_t len)
 	now = localtime(&t);
 	if (now == NULL)
 		return -1;
-	strftime(buf, len, "%a %d %b %Y %H:%M %Z", now);
+	strftime(buf, len, timeformat, now);
 	return 0;
 }
