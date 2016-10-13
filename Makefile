@@ -1,10 +1,7 @@
 VERSION = 0.2
 PREFIX = /usr/local
-DISTFILES = spoon.c batt.c wifi.c cpu.c temp.c mix.c date.c load.c\
-            mpd.c xkblayout.c strlcpy.c strlcat.c util.h config.def.h\
-            Makefile LICENSE configure
-OBJ = spoon.o batt.o wifi.o cpu.o temp.o mix.o date.o load.o mpd.o xkblayout.o\
-      strlcpy.o strlcat.o
+SRC = spoon.c batt.c wifi.c cpu.c temp.c mix.c date.c load.c\
+      strlcpy.c strlcat.c
 BIN = spoon
 
 include config.mk
@@ -16,7 +13,16 @@ CPPFLAGS_Linux = -DPATH_BAT_CAP=\"/sys/class/power_supply/BAT0/capacity\"\
                  -DPATH_TEMP=\"/sys/class/hwmon/hwmon0/temp1_input\"
 CPPFLAGS = $(CPPFLAGS_$(UNAME))
 LDFLAGS = $(LDFLAGS_$(UNAME))
-LDLIBS = -lxkbfile -lX11 -lmpdclient
+LDLIBS = -lX11
+
+SRC += xkblayout.c
+LDLIBS += -lxkbfile
+
+SRC += mpd.c
+LDLIBS += -lmpdclient
+
+DISTFILES = $(SRC) util.h config.def.h Makefile LICENSE configure
+OBJ = $(SRC:.c=.o)
 
 all: $(BIN)
 
