@@ -1,4 +1,3 @@
-/* See LICENSE file for copyright and license details. */
 #include <err.h>
 #include <stddef.h>
 #include <stdio.h>
