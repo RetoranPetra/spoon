@@ -4,6 +4,7 @@
 
 #ifdef __OpenBSD__
 #include <sys/sysctl.h>
+#include <sys/time.h>
 #include <sys/sensors.h>
 
 int
