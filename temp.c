@@ -1,3 +1,4 @@
+#include <err.h>
 #include <stddef.h>
 #include <stdio.h>
 
@@ -27,6 +28,17 @@ tempread(char *buf, size_t len)
 int
 tempread(char *buf, size_t len)
 {
-	return -1;
+	FILE *fp;
+	int temp;
+
+	fp = fopen(PATH_TEMP, "r");
+	if (fp == NULL) {
+		warn("fopen %s", PATH_TEMP);
+		return -1;
+	}
+	fscanf(fp, "%d", &temp);
+	fclose(fp);
+	snprintf(buf, len, "%ddegC", temp / 1000);
+	return 0;
 }
 #endif

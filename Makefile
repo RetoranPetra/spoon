@@ -12,7 +12,8 @@ include config.mk
 CPPFLAGS_OpenBSD = -I/usr/X11R6/include -I/usr/local/include
 LDFLAGS_OpenBSD = -L/usr/X11R6/lib -L/usr/local/lib
 CPPFLAGS_Linux = -DPATH_BAT_CAP=\"/sys/class/power_supply/BAT0/capacity\"\
-                 -DPATH_AC_ONLINE=\"/sys/class/power_supply/AC/online\"
+                 -DPATH_AC_ONLINE=\"/sys/class/power_supply/AC/online\"\
+                 -DPATH_TEMP=\"/sys/class/hwmon/hwmon0/temp1_input\"
 CPPFLAGS = $(CPPFLAGS_$(UNAME))
 LDFLAGS = $(LDFLAGS_$(UNAME))
 LDLIBS = -lxkbfile -lX11 -lmpdclient
