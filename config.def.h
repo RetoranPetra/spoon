@@ -4,7 +4,7 @@ int delay = 1;
 char timeformat[] = "%a %d %b %Y %H:%M %Z";
 
 struct ent ents[] = {
-	/* reorder this if you want */
+	/* reorder/remove these as you see fit */
 	{ .fmt = "[%s] ", .read = mpdread },
 	{ .fmt = "[%s] ", .read = mixread },
 	{ .fmt = "[%s] ", .read = loadread },
