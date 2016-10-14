@@ -63,10 +63,4 @@ out:
 	close(fd);
 	return ret;
 }
-#else
-int
-mixread(char *buf, size_t len)
-{
-	return -1;
-}
 #endif

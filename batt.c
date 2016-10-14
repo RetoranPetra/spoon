@@ -75,10 +75,4 @@ battread(char *buf, size_t len)
 	battprint(buf, len, acon, life);
 	return 0;
 }
-#else
-int
-battread(char *buf, size_t len)
-{
-	return -1;
-}
 #endif

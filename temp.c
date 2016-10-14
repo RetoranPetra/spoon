@@ -41,10 +41,4 @@ tempread(char *buf, size_t len)
 	snprintf(buf, len, "%ddegC", temp / 1000);
 	return 0;
 }
-#else
-int
-tempread(char *buf, size_t len)
-{
-	return -1;
-}
 #endif

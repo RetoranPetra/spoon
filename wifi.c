@@ -103,10 +103,4 @@ wifiread(char *buf, size_t len)
 		return 0;
 	return -1;
 }
-#else
-int
-wifiread(char *buf, size_t len)
-{
-	return -1;
-}
 #endif

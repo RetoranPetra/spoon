@@ -17,10 +17,4 @@ cpuread(char *buf, size_t len)
 	snprintf(buf, len, "%4dMHz", cpuspeed);
 	return 0;
 }
-#else
-int
-cpuread(char *buf, size_t len)
-{
-	return -1;
-}
 #endif
