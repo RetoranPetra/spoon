@@ -18,6 +18,9 @@ CPPFLAGS = $(CPPFLAGS_$(UNAME))
 LDFLAGS = $(LDFLAGS_$(UNAME))
 LDLIBS = -lX11
 
+# To remove extra compile time dependencies for unwanted plugins
+# comment out the following sections.  The stub implementations
+# from stub.c will be used instead.
 OBJ += xkblayout.o
 LDLIBS += -lxkbfile
 
