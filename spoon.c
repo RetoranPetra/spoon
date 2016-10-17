@@ -1,4 +1,5 @@
 #include <err.h>
+#include <limits.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -35,7 +36,7 @@ dummyread(void *arg, char *buf, size_t len)
 void
 entcat(char *line, size_t len)
 {
-	char buf[BUFSIZ];
+	char buf[LINE_MAX];
 	char *s, *e;
 	struct ent *ent;
 	int ret, i;
@@ -53,7 +54,7 @@ entcat(char *line, size_t len)
 void
 loop(void)
 {
-	char line[BUFSIZ];
+	char line[LINE_MAX];
 	Display *dpy;
 
 	dpy = XOpenDisplay(NULL);
