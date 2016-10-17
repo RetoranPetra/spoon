@@ -5,7 +5,7 @@ SRC = spoon.c batt.c wifi.c cpu.c temp.c mix.c date.c load.c\
 OBJ = spoon.o batt.o wifi.o cpu.o temp.o mix.o date.o load.o\
       strlcpy.o strlcat.o stub.o
 BIN = spoon
-DISTFILES = $(SRC) util.h config.def.h Makefile LICENSE configure
+DISTFILES = $(SRC) types.h util.h config.def.h Makefile LICENSE configure
 
 include config.mk
 

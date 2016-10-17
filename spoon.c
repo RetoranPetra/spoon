@@ -24,6 +24,7 @@ struct ent {
 	void *arg;
 };
 
+#include "types.h"
 #include "config.h"
 
 int

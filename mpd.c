@@ -3,6 +3,7 @@
 
 #include <mpd/client.h>
 
+#include "types.h"
 #include "util.h"
 
 int
@@ -11,9 +12,10 @@ mpdread(void *arg, char *buf, size_t len)
 	static struct mpd_connection *conn;
 	struct mpd_song *song;
 	const char *artist, *title, *name;
+	struct mpdarg *mpdarg = arg;
 
 	if (conn == NULL) {
-		conn = mpd_connection_new(NULL, 0, 0);
+		conn = mpd_connection_new(mpdarg->host, mpdarg->port, 0);
 		if (conn == NULL)
 			return -1;
 		if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS)
