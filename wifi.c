@@ -1,6 +1,8 @@
 #include <err.h>
 #include <stdio.h>
 
+#include "util.h"
+
 void
 wifiprint(char *buf, size_t len, int quality)
 {
