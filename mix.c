@@ -9,7 +9,7 @@
 #include <string.h>
 
 int
-mixread(char *buf, size_t len)
+mixread(void *arg, char *buf, size_t len)
 {
 	mixer_devinfo_t dinfo;
 	mixer_ctrl_t mctl;

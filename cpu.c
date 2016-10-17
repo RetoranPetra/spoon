@@ -4,7 +4,7 @@
 #include <sys/sysctl.h>
 
 int
-cpuread(char *buf, size_t len)
+cpuread(void *arg, char *buf, size_t len)
 {
 	int mib[2], cpuspeed;
 	size_t sz;

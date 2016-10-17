@@ -7,7 +7,7 @@
 #include <sys/sensors.h>
 
 int
-tempread(char *buf, size_t len)
+tempread(void *arg, char *buf, size_t len)
 {
 	int mib[5];
 	struct sensor temp;
@@ -26,7 +26,7 @@ tempread(char *buf, size_t len)
 }
 #elif __linux__
 int
-tempread(char *buf, size_t len)
+tempread(void *arg, char *buf, size_t len)
 {
 	FILE *fp;
 	int temp;

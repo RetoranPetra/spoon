@@ -10,7 +10,7 @@
 #include "util.h"
 
 int
-xkblayoutread(char *buf, size_t len)
+xkblayoutread(void *arg, char *buf, size_t len)
 {
 	Display *dpy;
 	XkbStateRec state;

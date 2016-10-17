@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int
-loadread(char *buf, size_t len)
+loadread(void *arg, char *buf, size_t len)
 {
 	double avgs[3];
 

@@ -5,13 +5,13 @@ char timeformat[] = "%a %d %b %Y %H:%M %Z";
 
 struct ent ents[] = {
 	/* reorder/remove these as you see fit */
-	{ .fmt = "[%s] ", .read = mpdread },
-	{ .fmt = "[%s] ", .read = mixread },
-	{ .fmt = "[%s] ", .read = loadread },
-	{ .fmt = "[%s] ", .read = cpuread },
-	{ .fmt = "[%s] ", .read = tempread },
-	{ .fmt = "%s ", .read = battread },
-	{ .fmt = "%s ", .read = wifiread },
-	{ .fmt = "[%s] ", .read = xkblayoutread },
-	{ .fmt = "%s", .read = dateread },
+	{ .fmt = "[%s] ",	.read = mpdread,	.arg = NULL },
+	{ .fmt = "[%s] ",	.read = mixread,	.arg = NULL },
+	{ .fmt = "[%s] ",	.read = loadread,	.arg = NULL },
+	{ .fmt = "[%s] ",	.read = cpuread,	.arg = NULL },
+	{ .fmt = "[%s] ",	.read = tempread,	.arg = NULL },
+	{ .fmt = "%s ",		.read = battread,	.arg = NULL },
+	{ .fmt = "%s ",		.read = wifiread,	.arg = NULL },
+	{ .fmt = "[%s] ",	.read = xkblayoutread,	.arg = NULL },
+	{ .fmt = "%s",		.read = dateread,	.arg = (char []){"%a %d %b %Y %H:%M %Z"} },
 };

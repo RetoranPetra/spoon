@@ -6,26 +6,27 @@
 
 #define LEN(x) (sizeof (x) / sizeof *(x))
 
-int battread(char *, size_t);
-int cpuread(char *, size_t);
-int dateread(char *, size_t);
-int dummyread(char *, size_t);
-int loadread(char *, size_t);
-int mixread(char *, size_t);
-int mpdread(char *, size_t);
-int tempread(char *, size_t);
-int wifiread(char *, size_t);
-int xkblayoutread(char *, size_t);
+int battread(void *, char *, size_t);
+int cpuread(void *, char *, size_t);
+int dateread(void *, char *, size_t);
+int dummyread(void *, char *, size_t);
+int loadread(void *, char *, size_t);
+int mixread(void *, char *, size_t);
+int mpdread(void *, char *, size_t);
+int tempread(void *, char *, size_t);
+int wifiread(void *, char *, size_t);
+int xkblayoutread(void *, char *, size_t);
 
 struct ent {
 	char *fmt;
-	int (*read)(char *, size_t);
+	int (*read)(void *, char *, size_t);
+	void *arg;
 };
 
 #include "config.h"
 
 int
-dummyread(char *buf, size_t len)
+dummyread(void *arg, char *buf, size_t len)
 {
 	buf[0] = '\0';
 	return 0;
@@ -43,7 +44,7 @@ entcat(char *line, size_t len)
 	e = line + len;
 	for (i = 0; i < LEN(ents); i++) {
 		ent = &ents[i];
-		ret = ent->read(buf, sizeof(buf));
+		ret = ent->read(ent->arg, buf, sizeof(buf));
 		if (ret == 0 && s < e)
 			s += snprintf(s, e - s, ent->fmt, buf);
 	}

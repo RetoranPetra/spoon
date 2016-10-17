@@ -30,7 +30,7 @@ battprint(char *buf, size_t len, int acon , int life)
 #include <machine/apmvar.h>
 
 int
-battread(char *buf, size_t len)
+battread(void *arg, char *buf, size_t len)
 {
 	struct apm_power_info info;
 	int ret, fd;
@@ -52,7 +52,7 @@ battread(char *buf, size_t len)
 }
 #elif __linux__
 int
-battread(char *buf, size_t len)
+battread(void *arg, char *buf, size_t len)
 {
 	FILE *fp;
 	int acon;

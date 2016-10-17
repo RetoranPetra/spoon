@@ -6,7 +6,7 @@
 #include "util.h"
 
 int
-mpdread(char *buf, size_t len)
+mpdread(void *arg, char *buf, size_t len)
 {
 	static struct mpd_connection *conn;
 	struct mpd_song *song;

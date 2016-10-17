@@ -3,10 +3,8 @@
 #include <stdio.h>
 #include <time.h>
 
-extern char timeformat[];
-
 int
-dateread(char *buf, size_t len)
+dateread(void *arg, char *buf, size_t len)
 {
 	struct tm *now;
 	time_t t;
@@ -15,6 +13,6 @@ dateread(char *buf, size_t len)
 	now = localtime(&t);
 	if (now == NULL)
 		return -1;
-	strftime(buf, len, timeformat, now);
+	strftime(buf, len, arg, now);
 	return 0;
 }

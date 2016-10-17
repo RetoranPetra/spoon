@@ -35,7 +35,7 @@ wifiprint(char *buf, size_t len, int quality)
 #include <unistd.h>
 
 int
-wifiread(char *buf, size_t len)
+wifiread(void *arg, char *buf, size_t len)
 {
 	struct ifaddrs *ifa, *ifas;
 	struct ifmediareq ifmr;
