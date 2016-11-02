@@ -21,6 +21,7 @@ tempread(void *arg, char *buf, size_t len)
 	sz = sizeof(temp);
 	if (sysctl(mib, 5, &temp, &sz, NULL, 0) == -1)
 		return -1;
+	/* temp.value is in kelvin so convert to celsius for display */
 	snprintf(buf, len, "%ddegC", (temp.value - 273150000) / 1000000);
 	return 0;
 }
