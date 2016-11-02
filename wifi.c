@@ -144,8 +144,10 @@ wifiread(void *arg, char *buf, size_t len)
 		wrq.u.data.length = sizeof(range);
 		memset(&range, 0, sizeof(range));
 		ret = ioctl(fd, SIOCGIWRANGE, &wrq);
-		if (ret < 0)
+		if (ret < 0) {
 			warnx("cannot get wifi range");
+			continue;
+		}
 		memset(&wrq, 0, sizeof(wrq));
 		strlcpy(wrq.ifr_name, ifa->ifa_name, IFNAMSIZ);
 		wrq.u.data.pointer = &stats;
@@ -153,8 +155,10 @@ wifiread(void *arg, char *buf, size_t len)
 		wrq.u.data.flags = 1;
 		memset(&stats, 0, sizeof(stats));
 		ret = ioctl(fd, SIOCGIWSTATS, &wrq);
-		if (ret < 0)
+		if (ret < 0) {
 			warnx("cannot get wifi stats");
+			continue;
+		}
 		max_qual = &range.max_qual;
 		qual = &stats.qual;
 		DPRINTF_U(max_qual->qual);
