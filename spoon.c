@@ -5,7 +5,7 @@
 
 #include <X11/Xlib.h>
 
-#define LEN(x) (sizeof (x) / sizeof *(x))
+#include "util.h"
 
 int battread(void *, char *, size_t);
 int cpuread(void *, char *, size_t);

@@ -6,13 +6,22 @@
 #include "types.h"
 #include "util.h"
 
+char *anim[] = {
+	"!!.|.",
+	"|!.!.",
+	"!.!!.",
+	"!!|.!",
+	".!!|!",
+};
+
 int
 mpdread(void *arg, char *buf, size_t len)
 {
 	static struct mpd_connection *conn;
 	struct mpd_song *song;
-	const char *artist, *title, *name;
+	const char *artist, *title;
 	struct mpdarg *mpdarg = arg;
+	static int frame = 0;
 
 	if (conn == NULL) {
 		conn = mpd_connection_new(mpdarg->host, mpdarg->port, 0);
@@ -36,12 +45,7 @@ mpdread(void *arg, char *buf, size_t len)
 	} else if (title != NULL) {
 		strlcpy(buf, title, len);
 	} else {
-		name = mpd_song_get_uri(song);
-		if (name == NULL) {
-			mpd_song_free(song);
-			goto out;
-		}
-		strlcpy(buf, name, len);
+		strlcpy(buf, anim[frame++ % LEN(anim)], len);
 	}
 	mpd_song_free(song);
 	if (!mpd_response_finish(conn))
