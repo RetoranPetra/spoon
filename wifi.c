@@ -1,5 +1,8 @@
 #include <err.h>
+#include <ifaddrs.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "util.h"
 
@@ -31,10 +34,6 @@ wifiprint(char *buf, size_t len, int quality)
 #include <net/if_media.h>
 #include <net80211/ieee80211.h>
 #include <net80211/ieee80211_ioctl.h>
-
-#include <ifaddrs.h>
-#include <string.h>
-#include <unistd.h>
 
 int
 wifiread(void *arg, char *buf, size_t len)
@@ -104,5 +103,91 @@ wifiread(void *arg, char *buf, size_t len)
 	if (ifa)
 		return 0;
 	return -1;
+}
+#elif __linux__
+#include <sys/types.h>
+#include <sys/socket.h>
+
+#include <linux/wireless.h>
+
+int
+wifiread(void *arg, char *buf, size_t len)
+{
+	struct ifaddrs *ifa, *ifas;
+	struct iw_quality *max_qual, *qual;
+	struct iw_statistics stats;
+	struct iw_range range;
+	struct iwreq wrq;
+	int quality = -1;
+	int level;
+	int ret, fd;
+
+	if (getifaddrs(&ifas) < 0) {
+		warn("getifaddrs");
+		return -1;
+	}
+	fd = socket(PF_INET, SOCK_DGRAM, 0);
+	if (fd == -1) {
+		warn("socket");
+		return -1;
+	}
+	for (ifa = ifas; ifa != NULL; ifa = ifa->ifa_next) {
+		DPRINTF_S(ifa->ifa_name);
+		memset(&wrq, 0, sizeof(wrq));
+		strlcpy(wrq.ifr_name, ifa->ifa_name, IFNAMSIZ);
+		ret = ioctl(fd, SIOCGIWNAME, &wrq);
+		if (ret != 0)
+			continue;
+		memset(&wrq, 0, sizeof(wrq));
+		strlcpy(wrq.ifr_name, ifa->ifa_name, IFNAMSIZ);
+		wrq.u.data.pointer = &range;
+		wrq.u.data.length = sizeof(range);
+		memset(&range, 0, sizeof(range));
+		ret = ioctl(fd, SIOCGIWRANGE, &wrq);
+		if (ret < 0)
+			warnx("cannot get wifi range");
+		memset(&wrq, 0, sizeof(wrq));
+		strlcpy(wrq.ifr_name, ifa->ifa_name, IFNAMSIZ);
+		wrq.u.data.pointer = &stats;
+		wrq.u.data.length = sizeof(stats);
+		wrq.u.data.flags = 1;
+		memset(&stats, 0, sizeof(stats));
+		ret = ioctl(fd, SIOCGIWSTATS, &wrq);
+		if (ret < 0)
+			warnx("cannot get wifi stats");
+		max_qual = &range.max_qual;
+		qual = &stats.qual;
+		DPRINTF_U(max_qual->qual);
+		DPRINTF_U(max_qual->level);
+		DPRINTF_U(qual->qual);
+		DPRINTF_U(qual->level);
+		if (max_qual->qual != 0) {
+			/* driver provides a quality metric */
+			quality = (unsigned)
+			    (((float)qual->qual / max_qual->qual) * 100);
+		} else if (max_qual->level != 0) {
+			/* driver provides signal strength (RSSI) */
+			quality = (unsigned)
+			    (((float)qual->level / max_qual->level) * 100);
+		} else if (max_qual->level == 0) {
+			/* driver provides absolute dBm values */
+			level = qual->level - 0x100;
+			if (level <= -100)
+				quality = 0;
+			else if (level >= -50)
+				quality = 100;
+			else
+				quality = 2 * (level + 100);
+		}
+		break;
+	}
+	close(fd);
+	freeifaddrs(ifas);
+
+	DPRINTF_D(quality);
+	if (quality == -1)
+		return -1;
+	wifiprint(buf, len, quality);
+	return 0;
 }
 #endif
