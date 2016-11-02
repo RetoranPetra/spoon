@@ -18,6 +18,8 @@ int
 mpdread(void *arg, char *buf, size_t len)
 {
 	static struct mpd_connection *conn;
+	struct mpd_status *status;
+	enum mpd_state state;
 	struct mpd_song *song;
 	const char *artist, *title;
 	struct mpdarg *mpdarg = arg;
@@ -30,6 +32,14 @@ mpdread(void *arg, char *buf, size_t len)
 		if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS)
 			goto out;
 	}
+	mpd_send_status(conn);
+	status = mpd_recv_status(conn);
+	state = mpd_status_get_state(status);
+	mpd_status_free(status);
+	if (!mpd_response_finish(conn))
+		goto out;
+	if (state != MPD_STATE_PLAY && state != MPD_STATE_PAUSE)
+		return -1;
 	mpd_send_current_song(conn);
 	song = mpd_recv_song(conn);
 	if (song == NULL) {
