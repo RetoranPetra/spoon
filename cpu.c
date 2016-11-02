@@ -1,3 +1,4 @@
+#include <err.h>
 #include <stdio.h>
 
 #ifdef __OpenBSD__
@@ -15,6 +16,24 @@ cpuread(void *arg, char *buf, size_t len)
 	if (sysctl(mib, 2, &cpuspeed, &sz, NULL, 0) < 0)
 		return -1;
 	snprintf(buf, len, "%4dMHz", cpuspeed);
+	return 0;
+}
+#elif __linux__
+int
+cpuread(void *arg, char *buf, size_t len)
+{
+	FILE *fp;
+	int freq;
+
+	fp = fopen(PATH_CPU_FREQ, "r");
+	if (fp == NULL) {
+		warn("fopen %s", PATH_CPU_FREQ);
+		return -1;
+	}
+	fscanf(fp, "%d", &freq);
+	fclose(fp);
+	freq /= 1000;
+	snprintf(buf, len, "%4dMHz", freq);
 	return 0;
 }
 #endif
