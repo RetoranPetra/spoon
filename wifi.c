@@ -167,12 +167,10 @@ wifiread(void *arg, char *buf, size_t len)
 		DPRINTF_U(qual->level);
 		if (max_qual->qual != 0) {
 			/* driver provides a quality metric */
-			quality = (unsigned)
-			    (((float)qual->qual / max_qual->qual) * 100);
+			quality = (((float)qual->qual / max_qual->qual) * 100);
 		} else if (max_qual->level != 0) {
 			/* driver provides signal strength (RSSI) */
-			quality = (unsigned)
-			    (((float)qual->level / max_qual->level) * 100);
+			quality = (((float)qual->level / max_qual->level) * 100);
 		} else if (max_qual->level == 0) {
 			/* driver provides absolute dBm values */
 			level = qual->level - 0x100;
