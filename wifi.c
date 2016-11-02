@@ -134,12 +134,12 @@ wifiread(void *arg, char *buf, size_t len)
 	for (ifa = ifas; ifa != NULL; ifa = ifa->ifa_next) {
 		DPRINTF_S(ifa->ifa_name);
 		memset(&wrq, 0, sizeof(wrq));
-		strlcpy(wrq.ifr_name, ifa->ifa_name, IFNAMSIZ);
+		strlcpy(wrq.ifr_name, ifa->ifa_name, IF_NAMESIZE);
 		ret = ioctl(fd, SIOCGIWNAME, &wrq);
 		if (ret != 0)
 			continue;
 		memset(&wrq, 0, sizeof(wrq));
-		strlcpy(wrq.ifr_name, ifa->ifa_name, IFNAMSIZ);
+		strlcpy(wrq.ifr_name, ifa->ifa_name, IF_NAMESIZE);
 		wrq.u.data.pointer = &range;
 		wrq.u.data.length = sizeof(range);
 		memset(&range, 0, sizeof(range));
@@ -147,7 +147,7 @@ wifiread(void *arg, char *buf, size_t len)
 		if (ret < 0)
 			warnx("cannot get wifi range");
 		memset(&wrq, 0, sizeof(wrq));
-		strlcpy(wrq.ifr_name, ifa->ifa_name, IFNAMSIZ);
+		strlcpy(wrq.ifr_name, ifa->ifa_name, IF_NAMESIZE);
 		wrq.u.data.pointer = &stats;
 		wrq.u.data.length = sizeof(stats);
 		wrq.u.data.flags = 1;
