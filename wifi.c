@@ -43,7 +43,6 @@ wifiread(void *arg, char *buf, size_t len)
 	struct ieee80211_nodereq nr;
 	struct ieee80211_bssid bssid;
 	int s, ibssid, quality;
-	char *icon;
 
 	if (getifaddrs(&ifas) < 0) {
 		warn("getifaddrs");
