@@ -69,45 +69,66 @@ out:
 int
 mixread(void *arg, char *buf, size_t len)
 {
-	snd_mixer_t *mixerhdl;
+	snd_mixer_selem_id_t *id;
 	snd_mixer_elem_t *elem;
-	snd_mixer_selem_id_t *sid;
-	long min, max;
-	long vol;
+	snd_mixer_t *mixerp;
+	long min, max, vol;
+	int ret = -1, r;
+	int master;
 
-	if (snd_mixer_open(&mixerhdl, 0) < 0) {
-		warnx("snd_mixer_open: failed");
+	snd_mixer_selem_id_alloca(&id);
+	snd_mixer_selem_id_set_name(id, "Master");
+	snd_mixer_selem_id_set_index(id, 0);
+
+	r = snd_mixer_open(&mixerp, O_RDONLY);
+	if (r < 0) {
+		warnx("snd_mixer_open: %s", snd_strerror(r));
 		return -1;
 	}
-	if (snd_mixer_attach(mixerhdl, "default") < 0) {
-		warnx("snd_mixer_attach: failed");
-		goto err0;
+	r = snd_mixer_attach(mixerp, "default");
+	if (r < 0) {
+		warnx("snd_mixer_attach: %s", snd_strerror(r));
+		goto out;
 	}
-	if (snd_mixer_selem_register(mixerhdl, NULL, NULL) < 0) {
-		warnx("snd_mixer_selem_register: failed");
-		goto err0;
+	r = snd_mixer_selem_register(mixerp, NULL, NULL);
+	if (r < 0) {
+		warnx("snd_mixer_selem_register: %s", snd_strerror(r));
+		goto out;
 	}
-	if (snd_mixer_load(mixerhdl) < 0) {
-		warnx("snd_mixer_load: failed");
-		goto err0;
+	r = snd_mixer_load(mixerp);
+	if (r < 0) {
+		warnx("snd_mixer_load: %s", snd_strerror(r));
+		goto out;
 	}
-	snd_mixer_selem_id_alloca(&sid);
-	snd_mixer_selem_id_set_name(sid, "Master");
-	elem = snd_mixer_find_selem(mixerhdl, sid);
+	elem = snd_mixer_find_selem(mixerp, id);
 	if (elem == NULL) {
-		warnx("snd_mixer_find_selem: failed");
-		goto err0;
+		warnx("could not find mixer element");
+		goto out;
 	}
-	snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
-	snd_mixer_selem_get_playback_volume(elem, 0, &vol);
-	snd_mixer_close(mixerhdl);
+	r = snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
+	if (r < 0) {
+		warnx("snd_mixer_selem_get_playback_volume_range: %s",
+		      snd_strerror(r));
+		goto out;
+	}
+	r = snd_mixer_selem_get_playback_volume(elem,
+	    SND_MIXER_SCHN_FRONT_LEFT, &vol);
+	if (r < 0) {
+		warnx("snd_mixer_selem_get_playback_volume: %s",
+		      snd_strerror(r));
+		goto out;
+	}
+	/* compute percentage */
+	vol -= min;
+	max -= min;
 	if (max == 0)
-		snprintf(buf, len, "0%%");
+		master = 0;
 	else
-		snprintf(buf, len, "%ld%%", vol * 100 / max);
-	return 0;
-err0:
-	snd_mixer_close(mixerhdl);
-	return -1;
+		master = 100 * vol / max;
+	snprintf(buf, len, "%d%%", master);
+	ret = 0;
+out:
+	snd_mixer_close(mixerp);
+	return ret;
 }
 #endif
