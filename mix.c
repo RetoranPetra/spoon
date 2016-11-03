@@ -63,4 +63,51 @@ out:
 	close(fd);
 	return ret;
 }
+#elif __linux__
+#include <alsa/asoundlib.h>
+
+int
+mixread(void *arg, char *buf, size_t len)
+{
+	snd_mixer_t *mixerhdl;
+	snd_mixer_elem_t *elem;
+	snd_mixer_selem_id_t *sid;
+	long min, max;
+	long vol;
+
+	if (snd_mixer_open(&mixerhdl, 0) < 0) {
+		warnx("snd_mixer_open: failed");
+		return -1;
+	}
+	if (snd_mixer_attach(mixerhdl, "default") < 0) {
+		warnx("snd_mixer_attach: failed");
+		goto err0;
+	}
+	if (snd_mixer_selem_register(mixerhdl, NULL, NULL) < 0) {
+		warnx("snd_mixer_selem_register: failed");
+		goto err0;
+	}
+	if (snd_mixer_load(mixerhdl) < 0) {
+		warnx("snd_mixer_load: failed");
+		goto err0;
+	}
+	snd_mixer_selem_id_alloca(&sid);
+	snd_mixer_selem_id_set_name(sid, "Master");
+	elem = snd_mixer_find_selem(mixerhdl, sid);
+	if (elem == NULL) {
+		warnx("snd_mixer_find_selem: failed");
+		goto err0;
+	}
+	snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
+	snd_mixer_selem_get_playback_volume(elem, 0, &vol);
+	snd_mixer_close(mixerhdl);
+	if (max == 0)
+		snprintf(buf, len, "0%%");
+	else
+		snprintf(buf, len, "%ld%%", vol * 100 / max);
+	return 0;
+err0:
+	snd_mixer_close(mixerhdl);
+	return -1;
+}
 #endif

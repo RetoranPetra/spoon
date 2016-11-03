@@ -11,14 +11,18 @@ include config.mk
 
 CPPFLAGS_OpenBSD = -I/usr/X11R6/include -I/usr/local/include
 LDFLAGS_OpenBSD = -L/usr/X11R6/lib -L/usr/local/lib
+LDLIBS_OpenBSD = -lX11
 CPPFLAGS_Linux =\
+    -I/usr/local/include\
     -DPATH_BAT_CAP=\"/sys/class/power_supply/BAT0/capacity\"\
     -DPATH_AC_ONLINE=\"/sys/class/power_supply/AC/online\"\
     -DPATH_TEMP=\"/sys/class/hwmon/hwmon0/temp1_input\"\
     -DPATH_CPU_FREQ=\"/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq\"
+LDFLAGS_Linux = -L/usr/local/lib
+LDLIBS_Linux = -lX11 -lasound
 CPPFLAGS = $(CPPFLAGS_$(UNAME))
 LDFLAGS = $(LDFLAGS_$(UNAME))
-LDLIBS = -lX11
+LDLIBS = $(LDLIBS_$(UNAME))
 
 # To remove extra compile time dependencies for unwanted plugins
 # comment out the following sections.  The stub implementations
