@@ -1,8 +1,8 @@
 VERSION = 0.2
 PREFIX = /usr/local
-SRC = spoon.c batt.c wifi.c cpu.c temp.c mix.c date.c load.c\
-      strlcpy.c strlcat.c stub.c xkblayout.c mpd.c
-OBJ = spoon.o batt.o wifi.o cpu.o temp.o mix.o date.o load.o\
+SRC = spoon.c batt.c wifi.c cpu.c temp.c date.c load.c\
+      strlcpy.c strlcat.c stub.c mix.c xkblayout.c mpd.c
+OBJ = spoon.o batt.o wifi.o cpu.o temp.o date.o load.o\
       strlcpy.o strlcat.o stub.o
 BIN = spoon
 DISTFILES = $(SRC) types.h util.h config.def.h Makefile LICENSE configure
@@ -18,8 +18,7 @@ CPPFLAGS_Linux =\
     -DPATH_AC_ONLINE=\"/sys/class/power_supply/AC/online\"\
     -DPATH_TEMP=\"/sys/class/hwmon/hwmon0/temp1_input\"\
     -DPATH_CPU_FREQ=\"/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq\"
-LDFLAGS_Linux = -L/usr/local/lib
-LDLIBS_Linux = -lX11 -lasound
+LDLIBS_Linux = -lX11
 CPPFLAGS = $(CPPFLAGS_$(UNAME))
 LDFLAGS = $(LDFLAGS_$(UNAME))
 LDLIBS = $(LDLIBS_$(UNAME))
@@ -27,6 +26,10 @@ LDLIBS = $(LDLIBS_$(UNAME))
 # To remove extra compile time dependencies for unwanted plugins
 # comment out the following sections.  The stub implementations
 # from stub.c will be used instead.
+OBJ += mix.o
+LDLIBS_Linux_mix = -lasound
+LDLIBS += $(LDLIBS_$(UNAME)_mix)
+
 OBJ += xkblayout.o
 LDLIBS += -lxkbfile
 
