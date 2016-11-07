@@ -98,12 +98,12 @@ mixread(void *arg, char *buf, size_t len)
 		warnx("snd_mixer_selem_register: %s", snd_strerror(r));
 		goto out;
 	}
+readvol:
 	r = snd_mixer_load(mixerp);
 	if (r < 0) {
 		warnx("snd_mixer_load: %s", snd_strerror(r));
 		goto out;
 	}
-readvol:
 	elem = snd_mixer_find_selem(mixerp, id);
 	if (elem == NULL) {
 		warnx("could not find mixer element");
@@ -130,6 +130,7 @@ readvol:
 	else
 		master = 100 * vol / max;
 	snprintf(buf, len, "%d%%", master);
+	snd_mixer_free(mixerp);
 	return 0;
 out:
 	snd_mixer_close(mixerp);
