@@ -42,47 +42,37 @@ wifiread(void *arg, char *buf, size_t len)
 	struct ifmediareq ifmr;
 	struct ieee80211_nodereq nr;
 	struct ieee80211_bssid bssid;
-	int s, ibssid, quality;
+	int quality = -1;
+	int fd, ibssid;
 
 	if (getifaddrs(&ifas) < 0) {
 		warn("getifaddrs");
 		return -1;
 	}
+	fd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (fd < 0) {
+		warn("socket");
+		return -1;
+	}
 	for (ifa = ifas; ifa; ifa = ifa->ifa_next) {
-		s = socket(AF_INET, SOCK_DGRAM, 0);
-		if (s < 0) {
-			warn("socket");
-			continue;
-		}
 		memset(&ifmr, 0, sizeof(ifmr));
 		strlcpy(ifmr.ifm_name, ifa->ifa_name, IF_NAMESIZE);
-		if (ioctl(s, SIOCGIFMEDIA, (caddr_t)&ifmr) < 0) {
-			close(s);
+		if (ioctl(fd, SIOCGIFMEDIA, (caddr_t)&ifmr) < 0)
 			continue;
-		}
-		if ((ifmr.ifm_active & IFM_IEEE80211) == 0) {
-			close(s);
+		if ((ifmr.ifm_active & IFM_IEEE80211) == 0)
 			continue;
-		}
-		if ((ifmr.ifm_active & IFM_IEEE80211_HOSTAP) != 0) {
-			close(s);
+		if ((ifmr.ifm_active & IFM_IEEE80211_HOSTAP) != 0)
 			continue;
-		}
 		memset(&bssid, 0, sizeof(bssid));
 		strlcpy(bssid.i_name, ifa->ifa_name, sizeof(bssid.i_name));
-		ibssid = ioctl(s, SIOCG80211BSSID, &bssid);
-		if (ibssid < 0) {
-			close(s);
+		ibssid = ioctl(fd, SIOCG80211BSSID, &bssid);
+		if (ibssid < 0)
 			continue;
-		}
 		memset(&nr, 0, sizeof(nr));
 		memcpy(&nr.nr_macaddr, bssid.i_bssid, sizeof(nr.nr_macaddr));
 		strlcpy(nr.nr_ifname, ifa->ifa_name, sizeof(nr.nr_ifname));
-		if (ioctl(s, SIOCG80211NODE, &nr) < 0) {
-			close(s);
+		if (ioctl(fd, SIOCG80211NODE, &nr) < 0)
 			continue;
-		}
-		close(s);
 		if (nr.nr_rssi == 0)
 			continue;
 		if (nr.nr_max_rssi == 0) {
@@ -95,13 +85,16 @@ wifiread(void *arg, char *buf, size_t len)
 		} else {
 			quality = IEEE80211_NODEREQ_RSSI(&nr);
 		}
-		wifiprint(buf, len, quality);
 		break;
 	}
+	close(fd);
 	freeifaddrs(ifas);
-	if (ifa)
-		return 0;
-	return -1;
+
+	DPRINTF_D(quality);
+	if (quality == -1)
+		return -1;
+	wifiprint(buf, len, quality);
+	return 0;
 }
 #elif __linux__
 #include <sys/types.h>
