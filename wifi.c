@@ -1,3 +1,5 @@
+#include <sys/ioctl.h>
+
 #include <err.h>
 #include <ifaddrs.h>
 #include <stdio.h>
@@ -28,7 +30,6 @@ wifiprint(char *buf, size_t len, int quality)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/select.h>
-#include <sys/ioctl.h>
 
 #include <net/if.h>
 #include <net/if_media.h>
