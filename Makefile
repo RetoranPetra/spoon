@@ -1,8 +1,8 @@
 VERSION = 0.3
 PREFIX = /usr/local
-SRC = spoon.c batt.c wifi.c cpu.c temp.c date.c load.c\
+SRC = spoon.c batt.c wifi.c cpu.c temp.c date.c load.c file.c\
       strlcpy.c strlcat.c stub.c mix.c xkblayout.c mpd.c
-OBJ = spoon.o batt.o wifi.o cpu.o temp.o date.o load.o\
+OBJ = spoon.o batt.o wifi.o cpu.o temp.o date.o load.o file.o\
       strlcpy.o strlcat.o stub.o
 BIN = spoon
 DISTFILES = $(SRC) types.h util.h config.def.h Makefile LICENSE configure

@@ -48,3 +48,10 @@ xkblayoutread(void *arg, char *buf, size_t len)
 {
 	return -1;
 }
+
+#pragma weak fileread
+int
+fileread(void *arg, char *buf, size_t len)
+{
+	return -1;
+}

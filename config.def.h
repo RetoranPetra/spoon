@@ -11,5 +11,6 @@ struct ent ents[] = {
 	{ .fmt = "%s ",		.read = battread,	.arg = NULL },
 	{ .fmt = "%s ",		.read = wifiread,	.arg = NULL },
 	{ .fmt = "[%s] ",	.read = xkblayoutread,	.arg = NULL },
+	{ .fmt = "%s ",		.read = fileread,	.arg = "/etc/myname" },
 	{ .fmt = "%s",		.read = dateread,	.arg = (char []){"%a %d %b %Y %H:%M %Z"} },
 };

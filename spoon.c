@@ -17,6 +17,7 @@ int mpdread(void *, char *, size_t);
 int tempread(void *, char *, size_t);
 int wifiread(void *, char *, size_t);
 int xkblayoutread(void *, char *, size_t);
+int fileread(void *, char *, size_t);
 
 struct ent {
 	char *fmt;
