@@ -29,6 +29,7 @@ keyread(void *arg, char *buf, size_t len)
 	keycode = XKeysymToKeycode(dpy, key->sym);
 	if (keycode == NoSymbol) {
 		warnx("no key code for this symbol");
+		XCloseDisplay(dpy);
 		return -1;
 	}
 	map = XGetModifierMapping(dpy);
@@ -38,6 +39,7 @@ keyread(void *arg, char *buf, size_t len)
 	XFreeModifiermap(map);
 	XQueryPointer(dpy, DefaultRootWindow(dpy),
 		      &w1, &w2, &i1, &i2, &i3, &i4, &modmask);
+	XCloseDisplay(dpy);
 	on = (keymask & modmask) != 0;
 	DPRINTF_D(on);
 	if (on)
