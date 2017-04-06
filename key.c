@@ -10,7 +10,7 @@
 int
 keyread(void *arg, char *buf, size_t len)
 {
-	static Display *dpy = NULL;
+	Display *dpy;
 	XModifierKeymap *map;
 	KeyCode keycode;
 	Window w1, w2;
@@ -21,12 +21,10 @@ keyread(void *arg, char *buf, size_t len)
 	int on;
 	int i;
 
+	dpy = XOpenDisplay(NULL);
 	if (dpy == NULL) {
-		dpy = XOpenDisplay(NULL);
-		if (dpy == NULL) {
-			warnx("cannot open display");
-			return -1;
-		}
+		warnx("cannot open display");
+		return -1;
 	}
 	keycode = XKeysymToKeycode(dpy, key->sym);
 	if (keycode == NoSymbol) {
