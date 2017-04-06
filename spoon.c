@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <X11/keysym.h>
 #include <X11/Xlib.h>
 
 #include "util.h"
@@ -18,6 +19,7 @@ int tempread(void *, char *, size_t);
 int wifiread(void *, char *, size_t);
 int xkblayoutread(void *, char *, size_t);
 int fileread(void *, char *, size_t);
+int keyread(void *, char *, size_t);
 
 struct ent {
 	char *fmt;

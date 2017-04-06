@@ -55,3 +55,10 @@ fileread(void *arg, char *buf, size_t len)
 {
 	return -1;
 }
+
+#pragma weak keyread
+int
+keyread(void *arg, char *buf, size_t len)
+{
+	return -1;
+}
