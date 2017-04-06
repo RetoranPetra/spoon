@@ -1,14 +1,22 @@
 #include <err.h>
 #include <stdio.h>
 
+#include "util.h"
+
+char *crit[] = {
+	"[!!!!]=",
+	"       ",
+};
+
 void
 battprint(char *buf, size_t len, int acon , int life)
 {
 	char c;
+	static int frame = 0;
 
 	c = acon ? '>' : '<';
 	if (!acon && life <= 5)
-		snprintf(buf, len, "[!!!!]=");
+		snprintf(buf, len, "%s", crit[frame++ % LEN(crit)]);
 	else if (life >= 80)
 		snprintf(buf, len, "[////]=");
 	else if (life >= 60)
