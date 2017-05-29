@@ -9,6 +9,7 @@
 
 #include <fcntl.h>
 #include <string.h>
+#include <unistd.h>
 
 int
 mixread(void *arg, char *buf, size_t len)
