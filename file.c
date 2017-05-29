@@ -42,7 +42,7 @@ fileread(void *arg, char *buf, size_t len)
 		buf[n - 1] = '\0';
 	/* stop at the first non-printable character */
 	for (i = 0; i < len; i++)
-		if (!isprint(buf[i]))
+		if (!isprint((unsigned char)buf[i]))
 			buf[i] = '\0';
 	return 0;
 }
