@@ -15,8 +15,8 @@ keyread(void *arg, char *buf, size_t len)
 	KeyCode keycode;
 	Window w1, w2;
 	int i1, i2, i3, i4;
-	int modmask;
-	int keymask;
+	unsigned modmask;
+	unsigned keymask;
 	struct keyarg *key = arg;
 	int on;
 	int i;
@@ -35,7 +35,7 @@ keyread(void *arg, char *buf, size_t len)
 	map = XGetModifierMapping(dpy);
 	for (i = 0; i < 8; i++)
 		if (map->modifiermap[map->max_keypermod * i] == keycode)
-			keymask = 1 << i;
+			keymask = 1U << i;
 	XFreeModifiermap(map);
 	XQueryPointer(dpy, DefaultRootWindow(dpy),
 		      &w1, &w2, &i1, &i2, &i3, &i4, &modmask);
