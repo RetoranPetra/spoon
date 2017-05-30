@@ -1,4 +1,3 @@
-#include <ctype.h>
 #include <err.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -27,7 +26,6 @@ fileread(void *arg, char *buf, size_t len)
 	char *path = arg;
 	ssize_t n;
 	int fd;
-	int i;
 
 	fd = open(path, O_RDONLY);
 	if (fd == -1) {
@@ -40,9 +38,5 @@ fileread(void *arg, char *buf, size_t len)
 		return -1;
 	else
 		buf[n - 1] = '\0';
-	/* stop at the first non-printable character */
-	for (i = 0; i < len; i++)
-		if (!isprint((unsigned char)buf[i]))
-			buf[i] = '\0';
 	return 0;
 }
