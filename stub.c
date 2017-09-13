@@ -62,3 +62,10 @@ keyread(void *arg, char *buf, size_t len)
 {
 	return -1;
 }
+
+#pragma weak netspeedread
+int
+netspeedread(void *arg, char *buf, size_t len)
+{
+	return -1;
+}
