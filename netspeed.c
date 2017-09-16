@@ -98,28 +98,28 @@ netspeedread(void *arg, char *buf, size_t len)
 	(void)snprintf(path, sizeof(path), "/sys/class/net/%s/statistics/rx_bytes", ifname);
 	if (!(fp = fopen(path, "r"))) {
 		warn("fopen %s", path);
-		goto closeandfree;
+		goto err;
 	}
 	if (fscanf(fp, "%llu", &rxbytes) != 1) {
 		warn("fscanf %s", path);
-		goto closeandfree;
+		goto err;
 	}
 	fclose(fp);
 	(void)snprintf(path, sizeof(path), "/sys/class/net/%s/statistics/tx_bytes", ifname);
 	if (!(fp = fopen(path, "r"))) {
 		warn("fopen %s", path);
-		goto closeandfree;
+		goto err;
 	}
 	if (fscanf(fp, "%llu", &txbytes) != 1) {
 		warn("fscanf %s", path);
-		goto closeandfree;
+		goto err;
 	}
 	fclose(fp);
 
 	updatenetspeed(buf, len, rxbytes, txbytes);
 	return 0;
 
-closeandfree:
+err:
 	fclose(fp);
 	return -1;
 }
