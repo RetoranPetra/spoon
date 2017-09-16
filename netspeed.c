@@ -98,7 +98,7 @@ netspeedread(void *arg, char *buf, size_t len)
 	(void)snprintf(path, sizeof(path), "/sys/class/net/%s/statistics/rx_bytes", ifname);
 	if (!(fp = fopen(path, "r"))) {
 		warn("fopen %s", path);
-		goto err;
+		return -1;
 	}
 	if (fscanf(fp, "%llu", &rxbytes) != 1) {
 		warn("fscanf %s", path);
@@ -108,7 +108,7 @@ netspeedread(void *arg, char *buf, size_t len)
 	(void)snprintf(path, sizeof(path), "/sys/class/net/%s/statistics/tx_bytes", ifname);
 	if (!(fp = fopen(path, "r"))) {
 		warn("fopen %s", path);
-		goto err;
+		return -1;
 	}
 	if (fscanf(fp, "%llu", &txbytes) != 1) {
 		warn("fscanf %s", path);
