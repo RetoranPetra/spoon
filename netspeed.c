@@ -102,7 +102,8 @@ netspeedread(void *arg, char *buf, size_t len)
 	}
 	if (fscanf(fp, "%llu", &rxbytes) != 1) {
 		warn("fscanf %s", path);
-		goto err;
+		fclose(fp);
+		return -1;
 	}
 	fclose(fp);
 	(void)snprintf(path, sizeof(path), "/sys/class/net/%s/statistics/tx_bytes", ifname);
@@ -112,15 +113,12 @@ netspeedread(void *arg, char *buf, size_t len)
 	}
 	if (fscanf(fp, "%llu", &txbytes) != 1) {
 		warn("fscanf %s", path);
-		goto err;
+		fclose(fp);
+		return -1;
 	}
 	fclose(fp);
 
 	updatenetspeed(buf, len, rxbytes, txbytes);
 	return 0;
-
-err:
-	fclose(fp);
-	return -1;
 }
 #endif
