@@ -15,7 +15,7 @@ CPPFLAGS_Linux =\
     -I/usr/local/include\
     -DPATH_BAT_CAP=\"/sys/class/power_supply/BAT0/capacity\"\
     -DPATH_AC_ONLINE=\"/sys/class/power_supply/AC/online\"\
-    -DPATH_TEMP=\"/sys/class/hwmon/hwmon0/temp1_input\"\
+    -DPATH_TEMP=\"/sys/class/hwmon/hwmon1/temp1_input\"\
     -DPATH_CPU_FREQ=\"/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq\"
 CPPFLAGS = $(CPPFLAGS_$(UNAME))
 LDFLAGS = $(LDFLAGS_$(UNAME))

@@ -32,7 +32,7 @@ updatenetspeed(char *buf, size_t len, uint64_t rxbytes, uint64_t txbytes)
 	tx = (txbytes - oldtxbytes) / delay;
 	irx = humansz(rx);
 	itx = humansz(tx);
-	snprintf(buf, len, "v%6.1f%s/s ^%6.1f%s/s", rx
+	snprintf(buf, len, "D:%6.1f%s/s U:%6.1f%s/s", rx
 	    / (double)(1 << (10 * irx)), humansztbl[irx], tx
 	    / (double)(1 << (10 * itx)), humansztbl[itx]);
 	oldrxbytes = rxbytes;
