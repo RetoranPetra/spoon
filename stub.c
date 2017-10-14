@@ -69,3 +69,10 @@ netspeedread(void *arg, char *buf, size_t len)
 {
 	return -1;
 }
+
+#pragma weak brightnessread
+int
+brightnessread(void *arg, char *buf, size_t len)
+{
+	return -1;
+}
