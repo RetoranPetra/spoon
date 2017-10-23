@@ -1,0 +1,5 @@
+*.o
+*.tar.gz
+/config.h
+/config.mk
+spoon
