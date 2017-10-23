@@ -66,7 +66,7 @@ out:
 	close(fd);
 	return ret;
 }
-#elif __linux__
+#elif __linux__ && !USE_TINYALSA
 #include <alsa/asoundlib.h>
 
 static int master;
@@ -165,5 +165,51 @@ out:
 	snd_mixer_close(mixerp);
 	mixerp = NULL;
 	return -1;
+}
+#elif __linux__ && USE_TINYALSA
+#include <tinyalsa/asoundlib.h>
+
+int
+mixread(void *arg, char *buf, size_t len)
+{
+	struct mixer		*mixer;
+	struct mixer_ctl	*ctl;
+	int			 vol, max;
+	int			 rc = 0;
+	(void)arg;
+
+	if ((mixer = mixer_open(0)) == NULL) {
+		fprintf(stderr, "mixer_open() failed\n");
+		return -1;
+	}
+
+	/* Master Playback Switch, see `tinymix contents` */
+	if ((ctl = mixer_get_ctl(mixer, 10)) == NULL) {
+		fprintf(stderr, "mixer_get_ctl_by_name() failed\n");
+		rc = -1;
+		goto exit;
+	}
+	if (!mixer_ctl_get_value(ctl, 0)) {
+		snprintf(buf, len, "mute");
+		goto exit;
+	}
+
+	/* Master Playback Volume, see `tinymix contents` */
+	if ((ctl = mixer_get_ctl(mixer, 9)) == NULL) {
+		fprintf(stderr, "mixer_get_ctl_by_name() failed\n");
+		rc = -1;
+		goto exit;
+	}
+	if (!(vol = mixer_ctl_get_value(ctl, 0))) {
+		snprintf(buf, len, "0%%");
+		goto exit;
+	}
+
+	max = mixer_ctl_get_range_max(ctl);
+	snprintf(buf, len, "%d%%", vol * 100 / max);
+
+exit:
+	mixer_close(mixer);
+	return rc;
 }
 #endif

@@ -25,7 +25,12 @@ LDLIBS = -lX11
 # comment out the following sections.  The stub implementations
 # from stub.c will be used instead.
 OBJ += mix.o
+# if ALSA
 LDLIBS_Linux_mix = -lasound
+CPPFLAGS += -DUSE_TINYALSA=0
+# else TinyALSA
+#LDLIBS_Linux_mix = -ltinyalsa
+#CPPFLAGS += -DUSE_TINYALSA=1
 LDLIBS += $(LDLIBS_$(UNAME)_mix)
 
 OBJ += xkblayout.o
