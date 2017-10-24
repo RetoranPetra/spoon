@@ -183,8 +183,8 @@ mixread(void *arg, char *buf, size_t len)
 		return -1;
 	}
 
-	/* Master Playback Switch, see `tinymix contents` */
-	if ((ctl = mixer_get_ctl(mixer, 10)) == NULL) {
+	if ((ctl = mixer_get_ctl_by_name(mixer, "Master Playback Switch"))
+	    == NULL) {
 		fprintf(stderr, "mixer_get_ctl_by_name() failed\n");
 		rc = -1;
 		goto exit;
@@ -194,8 +194,8 @@ mixread(void *arg, char *buf, size_t len)
 		goto exit;
 	}
 
-	/* Master Playback Volume, see `tinymix contents` */
-	if ((ctl = mixer_get_ctl(mixer, 9)) == NULL) {
+	if ((ctl = mixer_get_ctl_by_name(mixer, "Master Playback Volume"))
+	    == NULL) {
 		fprintf(stderr, "mixer_get_ctl_by_name() failed\n");
 		rc = -1;
 		goto exit;
