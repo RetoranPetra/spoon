@@ -4,6 +4,7 @@ int delay = 1;
 struct ent ents[] = {
 	/* reorder/remove these as you see fit */
 	{ .fmt = "[%s] ",	.read = mpdread,	.arg = &(struct mpdarg){ .host = NULL, .port = 0 } },
+	{ .fmt = "[%s] ",	.read = countread,	.arg = (char []){"/home/USER/Maildir/INBOX/new"} },
 	{ .fmt = "[%s] ",	.read = mixread,	.arg = NULL },
 	{ .fmt = "[%s] ",	.read = loadread,	.arg = NULL },
 	{ .fmt = "[%s] ",	.read = cpuread,	.arg = NULL },

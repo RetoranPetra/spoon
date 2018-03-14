@@ -22,6 +22,7 @@ int fileread(void *, char *, size_t);
 int keyread(void *, char *, size_t);
 int netspeedread(void *, char *, size_t);
 int brightnessread(void *, char *, size_t);
+int countread(void *, char *, size_t);
 
 struct ent {
 	char *fmt;

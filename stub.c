@@ -76,3 +76,10 @@ brightnessread(void *arg, char *buf, size_t len)
 {
 	return -1;
 }
+
+#pragma weak countread
+int
+countread(void *arg, char *buf, size_t len)
+{
+	return -1;
+}
