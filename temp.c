@@ -29,12 +29,13 @@ tempread(void *arg, char *buf, size_t len)
 int
 tempread(void *arg, char *buf, size_t len)
 {
+	char *path = arg;
 	FILE *fp;
 	int temp;
 
-	fp = fopen(PATH_TEMP, "r");
+	fp = fopen(path, "r");
 	if (fp == NULL) {
-		warn("fopen %s", PATH_TEMP);
+		warn("fopen %s", path);
 		return -1;
 	}
 	fscanf(fp, "%d", &temp);
