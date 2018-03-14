@@ -1,8 +1,6 @@
 #include <err.h>
 #include <stdio.h>
 
-#include "types.h"
-
 #ifdef __OpenBSD__
 #include <sys/sysctl.h>
 
@@ -24,13 +22,13 @@ cpuread(void *arg, char *buf, size_t len)
 int
 cpuread(void *arg, char *buf, size_t len)
 {
-	struct cpuarg *cpuarg = arg;
+	char *path = arg;
 	FILE *fp;
 	int freq;
 
-	fp = fopen(cpuarg->freq, "r");
+	fp = fopen(path, "r");
 	if (fp == NULL) {
-		warn("fopen %s", cpuarg->freq);
+		warn("fopen %s", path);
 		return -1;
 	}
 	fscanf(fp, "%d", &freq);
