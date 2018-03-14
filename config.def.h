@@ -7,7 +7,7 @@ struct ent ents[] = {
 	{ .fmt = "[%s] ",	.read = countread,	.arg = (char []){"/home/USER/Maildir/INBOX/new"} },
 	{ .fmt = "[%s] ",	.read = mixread,	.arg = NULL },
 	{ .fmt = "[%s] ",	.read = loadread,	.arg = NULL },
-	{ .fmt = "[%s] ",	.read = cpuread,	.arg = NULL },
+	{ .fmt = "[%s] ",	.read = cpuread,	.arg = &(struct cpuarg){ .freq = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq" } },
 	{ .fmt = "[%s°] ",	.read = tempread,	.arg = "/sys/class/hwmon/hwmon1/temp1_input" },
 	{ .fmt = "%s ",		.read = battread,	.arg = &(struct battarg){ .cap = "/sys/class/power_supply/BAT0/capacity", .ac = "/sys/class/power_supply/AC/online" } },
 	{ .fmt = "%s ",		.read = wifiread,	.arg = NULL },

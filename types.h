@@ -3,6 +3,10 @@ struct battarg {
 	char *ac;
 };
 
+struct cpuarg {
+	char *freq;
+};
+
 struct mpdarg {
 	char *host;
 	unsigned int port;
