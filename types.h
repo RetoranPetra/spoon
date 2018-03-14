@@ -1,3 +1,8 @@
+struct battarg {
+	char *cap;
+	char *ac;
+};
+
 struct mpdarg {
 	char *host;
 	unsigned int port;

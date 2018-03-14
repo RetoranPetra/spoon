@@ -1,6 +1,7 @@
 #include <err.h>
 #include <stdio.h>
 
+#include "types.h"
 #include "util.h"
 
 char *crit[] = {
@@ -65,17 +66,18 @@ battread(void *arg, char *buf, size_t len)
 	FILE *fp;
 	int acon;
 	int life;
+	struct battarg *battarg = arg;
 
-	fp = fopen(PATH_BAT_CAP, "r");
+	fp = fopen(battarg->cap, "r");
 	if (fp == NULL) {
-		warn("fopen %s", PATH_BAT_CAP);
+		warn("fopen %s", battarg->cap);
 		return -1;
 	}
 	fscanf(fp, "%d", &life);
 	fclose(fp);
-	fp = fopen(PATH_AC_ONLINE, "r");
+	fp = fopen(battarg->ac, "r");
 	if (fp == NULL) {
-		warn("fopen %s", PATH_AC_ONLINE);
+		warn("fopen %s", battarg->ac);
 		return -1;
 	}
 	fscanf(fp, "%d", &acon);

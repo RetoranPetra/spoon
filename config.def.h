@@ -8,7 +8,7 @@ struct ent ents[] = {
 	{ .fmt = "[%s] ",	.read = loadread,	.arg = NULL },
 	{ .fmt = "[%s] ",	.read = cpuread,	.arg = NULL },
 	{ .fmt = "[%s] ",	.read = tempread,	.arg = NULL },
-	{ .fmt = "%s ",		.read = battread,	.arg = NULL },
+	{ .fmt = "%s ",		.read = battread,	.arg = &(struct battarg){ .cap = "/sys/class/power_supply/BAT0/capacity", .ac = "/sys/class/power_supply/AC/online" } },
 	{ .fmt = "%s ",		.read = wifiread,	.arg = NULL },
 	{ .fmt = "[%s] ",	.read = xkblayoutread,	.arg = NULL },
 	{ .fmt = "%s",		.read = keyread,	.arg = &(struct keyarg){ .sym = XK_Caps_Lock, .on = "[caps] ", .off = "" } },
