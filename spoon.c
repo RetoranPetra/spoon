@@ -1,11 +1,13 @@
 #include <err.h>
 #include <limits.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include <X11/keysym.h>
 #include <X11/Xlib.h>
 
+#include "arg.h"
 #include "util.h"
 
 int battread(void *, char *, size_t);
@@ -33,6 +35,10 @@ struct ent {
 #include "types.h"
 #include "config.h"
 
+char *argv0;
+int single;
+int tty;
+
 int
 dummyread(void *arg, char *buf, size_t len)
 {
@@ -59,7 +65,7 @@ entcat(char *line, size_t len)
 }
 
 void
-loop(void)
+xloop(void)
 {
 	char line[LINE_MAX];
 	Display *dpy;
@@ -71,13 +77,54 @@ loop(void)
 		entcat(line, sizeof(line));
 		XStoreName(dpy, DefaultRootWindow(dpy), line);
 		XSync(dpy, False);
+		if (single)
+			break;
 		sleep(delay);
 	}
 }
 
-int
-main(void)
+void
+ttyloop(void)
 {
-	loop();
+	char line[LINE_MAX];
+
+	for (;;) {
+		entcat(line, sizeof(line));
+		puts(line);
+		if (single)
+			break;
+		sleep(delay);
+	}
+}
+
+void
+usage(void)
+{
+	fprintf(stderr, "%s: [-st]\n", argv0);
+	fprintf(stderr, "  -s	One shot mode\n");
+	fprintf(stderr, "  -t	Use TTY backend\n");
+	exit(1);
+}
+
+int
+main(int argc, char *argv[])
+{
+	char *end;
+
+	ARGBEGIN {
+	case 's':
+		single = 1;
+		break;
+	case 't':
+		tty = 1;
+		break;
+	default:
+		usage();
+	} ARGEND
+
+	if (tty)
+		ttyloop();
+	else
+		xloop();
 	return 0;
 }
