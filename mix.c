@@ -78,7 +78,7 @@ mixer_elem_cb(snd_mixer_elem_t *elem, unsigned int mask)
 	long min, max, vol;
 	int r;
 
-	r = snd_mixer_selem_get_playback_switch(elem, SND_MIXER_SCHN_FRONT_LEFT, &active);
+	r = snd_mixer_selem_get_playback_switch(elem, SND_MIXER_SCHN_UNKNOWN, &active);
 	if (r < 0) {
 		warnx("snd_mixer_selem_get_playback_switch: %s",
 		      snd_strerror(r));
@@ -92,7 +92,7 @@ mixer_elem_cb(snd_mixer_elem_t *elem, unsigned int mask)
 		return -1;
 	}
 	r = snd_mixer_selem_get_playback_volume(elem,
-	    SND_MIXER_SCHN_FRONT_LEFT, &vol);
+	    SND_MIXER_SCHN_UNKNOWN, &vol);
 	if (r < 0) {
 		warnx("snd_mixer_selem_get_playback_volume: %s",
 		      snd_strerror(r));
