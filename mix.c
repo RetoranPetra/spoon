@@ -69,6 +69,7 @@ out:
 #elif __linux__ && !USE_TINYALSA
 #include <alsa/asoundlib.h>
 
+static int active;
 static int master;
 
 int
@@ -77,6 +78,13 @@ mixer_elem_cb(snd_mixer_elem_t *elem, unsigned int mask)
 	long min, max, vol;
 	int r;
 
+	r = snd_mixer_selem_get_playback_switch(elem, SND_MIXER_SCHN_FRONT_LEFT, &active);
+	if (r < 0) {
+		warnx("snd_mixer_selem_get_playback_switch: %s",
+		      snd_strerror(r));
+		return -1;
+	}
+	DPRINTF_D(active);
 	r = snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
 	if (r < 0) {
 		warnx("snd_mixer_selem_get_playback_volume_range: %s",
@@ -158,7 +166,10 @@ readvol:
 		warnx("snd_mixer_handle_events: %s", snd_strerror(r));
 		goto out;
 	}
-	snprintf(buf, len, "%d%%", master);
+	if (active)
+		snprintf(buf, len, "%d%%", master);
+	else
+		snprintf(buf, len, "!%d%%", master);
 	return 0;
 out:
 	snd_mixer_free(mixerp);
