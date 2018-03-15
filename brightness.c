@@ -30,9 +30,26 @@ brightnessread(void *arg, char *buf, size_t len)
 	return 0;
 }
 #elif __linux__
+#include <sys/wait.h>
 int
 brightnessread(void *arg, char *buf, size_t len)
 {
-	return -1;
+	FILE *fp;
+	int brightness;
+
+	fp = popen("xbacklight", "r");
+	if (fp == NULL)
+		return -1;
+	if (fscanf(fp, "%d", &brightness) == EOF) {
+		if (ferror(fp)) {
+			pclose(fp);
+			return -1;
+		}
+	}
+	/* This system does not have a backlight so report it as 100% */
+	if (WEXITSTATUS(pclose(fp)) == 1)
+		brightness = 100;
+	snprintf(buf, len, "%3d%%", brightness);
+	return 0;
 }
 #endif
