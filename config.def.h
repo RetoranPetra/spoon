@@ -14,5 +14,5 @@ struct ent ents[] = {
 	{ .fmt = "[%s] ",	.read = xkblayoutread,	.arg = NULL },
 	{ .fmt = "%s",		.read = keyread,	.arg = &(struct keyarg){ .sym = XK_Caps_Lock, .on = "[caps] ", .off = "" } },
 	{ .fmt = "%s ",		.read = fileread,	.arg = "/etc/myname" },
-	{ .fmt = "%s",		.read = dateread,	.arg = "%a %d %b %Y %H:%M %Z" },
+	{ .fmt = "%s",		.read = dateread,	.arg = &(struct datearg){ .fmt = "%a %d %b %Y %H:%M %Z", .tz = NULL } },
 };

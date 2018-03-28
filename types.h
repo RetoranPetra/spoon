@@ -13,3 +13,8 @@ struct keyarg {
 	char *on;
 	char *off;
 };
+
+struct datearg {
+	char *fmt;
+	char *tz;
+};
