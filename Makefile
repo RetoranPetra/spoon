@@ -1,4 +1,4 @@
-VERSION = 0.5
+VERSION = 0.6
 PREFIX = /usr/local
 SRC = spoon.c batt.c wifi.c cpu.c count.c temp.c date.c load.c file.c key.c\
       netspeed.c strlcpy.c strlcat.c stub.c mix.c xkblayout.c mpd.c brightness.c
