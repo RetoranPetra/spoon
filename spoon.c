@@ -91,6 +91,7 @@ ttyloop(void)
 	for (;;) {
 		entcat(line, sizeof(line));
 		puts(line);
+		fflush(stdout);
 		if (single)
 			break;
 		sleep(delay);
