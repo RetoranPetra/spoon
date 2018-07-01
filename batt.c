@@ -10,7 +10,7 @@ char *crit[] = {
 };
 
 void
-battprint(char *buf, size_t len, int acon , int life)
+battprint(char *buf, size_t len, int acon, int life)
 {
 	char c;
 	static int frame = 0;
@@ -56,7 +56,11 @@ battread(void *arg, char *buf, size_t len)
 		return -1;
 	}
 	close(fd);
-	battprint(buf, len, info.ac_state == APM_AC_ON, info.battery_life);
+
+	if (info.battery_state == APM_BATTERY_ABSENT)
+		snprintf(buf, len, "[no batt]");
+	else
+		battprint(buf, len, info.ac_state == APM_AC_ON, info.battery_life);
 	return 0;
 }
 #elif __linux__
