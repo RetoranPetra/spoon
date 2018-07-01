@@ -22,7 +22,7 @@ tempread(void *arg, char *buf, size_t len)
 	if (sysctl(mib, 5, &temp, &sz, NULL, 0) == -1)
 		return -1;
 	/* temp.value is in kelvin so convert to celsius for display */
-	snprintf(buf, len, "%d", (temp.value - 273150000) / 1000000);
+	snprintf(buf, len, "%lld", (temp.value - 273150000) / 1000000);
 	return 0;
 }
 #elif __linux__
