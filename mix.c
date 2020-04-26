@@ -4,67 +4,159 @@
 #include "util.h"
 
 #ifdef __OpenBSD__
-#include <sys/ioctl.h>
-#include <sys/audioio.h>
-
-#include <fcntl.h>
+#include <errno.h>
+#include <poll.h>
+#include <sndio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+
+#define MAX_CHANNELS 16
+
+static struct sioctl_hdl *hdl = NULL;
+static struct pollfd *pfds = NULL;
+
+static struct {
+	unsigned int addr;
+	int val;
+} channel[MAX_CHANNELS];
+static size_t nchannels = 0;
+static int output = 0;
+
+static void
+update_output_value(void)
+{
+	size_t i;
+	int val;
+
+	if (nchannels == 0)
+		return;
+
+	val = 0;
+	for (i = 0; i < nchannels; i++)
+		val += channel[i].val;
+	output = 100 * ((val / (double)nchannels) / 255.0);
+}
+
+static void
+ondesc(void *arg, struct sioctl_desc *desc, int val)
+{
+	size_t i;
+
+	if (desc == NULL) {
+		update_output_value();
+		return;
+	}
+
+	if (desc->type != SIOCTL_NUM ||
+	    strcmp(desc->func, "level") != 0 ||
+	    strcmp(desc->node0.name, "output") != 0)
+		return;
+
+	for (i = 0; i < nchannels; i++)
+		if (channel[i].addr == desc->addr)
+			break;
+
+	if (i < nchannels) {
+		channel[i].val = val;
+		return;
+	}
+
+	if (nchannels >= MAX_CHANNELS) {
+		warnx("too many channels");
+		return;
+	}
+	channel[i].addr = desc->addr;
+	channel[i].val = val;
+	nchannels++;
+}
+
+static void
+onval(void *arg, unsigned int addr, unsigned int val)
+{
+	size_t i;
+
+	for (i = 0; i < nchannels; i++)
+		if (channel[i].addr == addr) {
+			channel[i].val = val;
+			break;
+		}
+
+	if (i < nchannels)
+		update_output_value();
+}
+
+static int
+do_init(void)
+{
+	hdl = sioctl_open(SIO_DEVANY, SIOCTL_READ, 0);
+	if (hdl == NULL) {
+		warnx("sioctl_open %s", SIO_DEVANY);
+		return 0;
+	}
+	if (!sioctl_ondesc(hdl, ondesc, NULL)) {
+		warnx("sioctl_ondesc");
+		sioctl_close(hdl);
+		return 0;
+	}
+	sioctl_onval(hdl, onval, NULL);
+
+	return 1;
+}
+
+static int
+poll_peek(void)
+{
+	int nfds, revents;
+
+	if (pfds == NULL) {
+		pfds = malloc(sizeof(struct pollfd) * sioctl_nfds(hdl));
+		if (pfds == NULL) {
+			warnx("out of memory");
+			goto out;
+		}
+	}
+
+	nfds = sioctl_pollfd(hdl, pfds, POLLIN);
+	if (nfds == 0)
+		return 1;
+	while (poll(pfds, nfds, 0) == -1)
+		if (errno != EINTR) {
+			warn("sioctl poll");
+			goto out;
+		}
+	revents = sioctl_revents(hdl, pfds);
+	if (revents & POLLHUP) {
+		warnx("sioctl disconnected");
+		goto out;
+	}
+
+	return 1;
+
+out:
+	free(pfds);
+	pfds = NULL;
+	sioctl_close(hdl);
+
+	return 0;
+}
 
 int
 mixread(void *arg, char *buf, size_t len)
 {
-	mixer_devinfo_t dinfo;
-	mixer_ctrl_t mctl;
-	int fd, master, ret = 0, i = -1;
+	static int init_done = 0;
+	struct pollfd *pfds;
+	int nfds;
 
-	fd = open("/dev/mixer", O_RDONLY);
-	if (fd == -1) {
-		warn("open %s", "/dev/mixer");
-		return -1;
+	if (!init_done) {
+		if (!do_init())
+			return -1;
+		init_done = 1;
 	}
-	dinfo.index = 0;
-	/* outputs */
-	for (; ; dinfo.index++) {
-		ret = ioctl(fd, AUDIO_MIXER_DEVINFO, &dinfo);
-		if (ret == -1) {
-			warn("AUDIO_MIXER_DEVINFO %s", "/dev/mixer");
-			goto out;
-		}
-		if (dinfo.type == AUDIO_MIXER_CLASS &&
-		    strcmp(dinfo.label.name, AudioCoutputs) == 0) {
-			i = dinfo.index;
-			break;
-		}
-	}
-	if (i == -1) {
-		warnx("no outputs mixer class: %s", "/dev/mixer");
-		goto out;
-	}
-	/* outputs.master */
-	for (; ; dinfo.index++) {
-		ret = ioctl(fd, AUDIO_MIXER_DEVINFO, &dinfo);
-		if (ret == -1) {
-			warn("AUDIO_MIXER_DEVINFO %s", "/dev/mixer");
-			goto out;
-		}
-		if (dinfo.type == AUDIO_MIXER_VALUE &&
-		    dinfo.prev == AUDIO_MIXER_LAST &&
-		    dinfo.mixer_class == i &&
-		    strcmp(dinfo.label.name, AudioNmaster) == 0)
-			break;
-	}
-	mctl.dev = dinfo.index;
-	ret = ioctl(fd, AUDIO_MIXER_READ, &mctl);
-	if (ret == -1) {
-		warn("AUDIO_MIXER_READ %s", "/dev/mixer");
-		goto out;
-	}
-	master = mctl.un.value.level[0] * 100 / 255;
-	snprintf(buf, len, "%d%%", master);
-out:
-	close(fd);
-	return ret;
+
+	init_done = poll_peek();
+	snprintf(buf, len, "%d%%", output);
+
+	return 0;
 }
 #elif __linux__ && !USE_TINYALSA
 #include <alsa/asoundlib.h>

@@ -20,6 +20,7 @@ LDLIBS = -lX11
 # comment out the following sections.  The stub implementations
 # from stub.c will be used instead.
 OBJ += mix.o
+LDLIBS_OpenBSD_mix = -lsndio
 # if ALSA
 LDLIBS_Linux_mix = -lasound
 CPPFLAGS += -DUSE_TINYALSA=0
