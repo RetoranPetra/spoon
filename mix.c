@@ -20,21 +20,20 @@ static struct {
 	int val;
 } channel[MAX_CHANNELS];
 static size_t nchannels = 0;
-static int output = 0;
 
-static void
-update_output_value(void)
+static int
+get_output(void)
 {
 	size_t i;
 	int val;
 
 	if (nchannels == 0)
-		return;
+		return 0;
 
 	val = 0;
 	for (i = 0; i < nchannels; i++)
 		val += channel[i].val;
-	output = 100 * ((val / (double)nchannels) / 255.0);
+	return 100 * ((val / (double)nchannels) / 255.0);
 }
 
 static void
@@ -42,10 +41,8 @@ ondesc(void *arg, struct sioctl_desc *desc, int val)
 {
 	size_t i;
 
-	if (desc == NULL) {
-		update_output_value();
+	if (desc == NULL)
 		return;
-	}
 
 	if (desc->type != SIOCTL_NUM ||
 	    strcmp(desc->func, "level") != 0 ||
@@ -80,9 +77,6 @@ onval(void *arg, unsigned int addr, unsigned int val)
 			channel[i].val = val;
 			break;
 		}
-
-	if (i < nchannels)
-		update_output_value();
 }
 
 static int
@@ -154,7 +148,7 @@ mixread(void *arg, char *buf, size_t len)
 	}
 
 	init_done = poll_peek();
-	snprintf(buf, len, "%d%%", output);
+	snprintf(buf, len, "%d%%", get_output());
 
 	return 0;
 }
