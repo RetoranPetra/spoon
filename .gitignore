@@ -3,3 +3,5 @@
 /config.h
 /config.mk
 spoon
+.cache
+compile_commands.json

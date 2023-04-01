@@ -1,0 +1,200 @@
+[
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "spoon.c"
+  ],
+  "file": "spoon.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "batt.c"
+  ],
+  "file": "batt.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "wifi.c"
+  ],
+  "file": "wifi.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "cpu.c"
+  ],
+  "file": "cpu.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "count.c"
+  ],
+  "file": "count.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "temp.c"
+  ],
+  "file": "temp.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "date.c"
+  ],
+  "file": "date.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "load.c"
+  ],
+  "file": "load.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "file.c"
+  ],
+  "file": "file.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "key.c"
+  ],
+  "file": "key.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "netspeed.c"
+  ],
+  "file": "netspeed.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "strlcpy.c"
+  ],
+  "file": "strlcpy.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "strlcat.c"
+  ],
+  "file": "strlcat.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "stub.c"
+  ],
+  "file": "stub.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "brightness.c"
+  ],
+  "file": "brightness.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "mix.c"
+  ],
+  "file": "mix.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "xkblayout.c"
+  ],
+  "file": "xkblayout.c"
+ },
+ {
+  "directory": "/home/retoran/.dotFiles/.dwm/spoon",
+  "arguments": [
+   "cc",
+   "-I/usr/local/include",
+   "-DUSE_TINYALSA=0",
+   "-c",
+   "mpd.c"
+  ],
+  "file": "mpd.c"
+ }
+]
