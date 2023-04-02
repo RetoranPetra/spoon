@@ -21,6 +21,13 @@ mixread(void *arg, char *buf, size_t len)
 	return -1;
 }
 
+#pragma weak mymixread
+int
+mymixread(void *arg, char *buf, size_t len)
+{
+	return -1;
+}
+
 #pragma weak mpdread
 int
 mpdread(void *arg, char *buf, size_t len)

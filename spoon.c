@@ -16,6 +16,7 @@ int dateread(void *, char *, size_t);
 int dummyread(void *, char *, size_t);
 int loadread(void *, char *, size_t);
 int mixread(void *, char *, size_t);
+int mymixread(void *, char *, size_t);
 int mpdread(void *, char *, size_t);
 int tempread(void *, char *, size_t);
 int wifiread(void *, char *, size_t);

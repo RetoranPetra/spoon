@@ -1,9 +1,9 @@
 VERSION = 0.6
 PREFIX = /usr/local
 SRC = spoon.c batt.c wifi.c cpu.c count.c temp.c date.c load.c file.c key.c\
-      netspeed.c strlcpy.c strlcat.c stub.c mix.c xkblayout.c mpd.c brightness.c
+      netspeed.c strlcpy.c strlcat.c stub.c mix.c xkblayout.c mpd.c brightness.c mymix.c
 OBJ = spoon.o batt.o wifi.o cpu.o count.o temp.o date.o load.o file.o key.o\
-      netspeed.o strlcpy.o strlcat.o stub.o brightness.o
+      netspeed.o strlcpy.o strlcat.o stub.o brightness.o mymix.o
 BIN = spoon
 DISTFILES = $(SRC) arg.h types.h util.h config.def.h Makefile LICENSE configure
 
