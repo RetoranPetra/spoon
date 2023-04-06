@@ -23,7 +23,7 @@ battprint(char *buf, size_t len, int acon, int life)
 	else if (life >= 60)
 		snprintf(buf, len, "=[%c///]", c);
 	else if (life >= 40)
-		snprintf(buf, len, "=[%c%c/]", c, c);
+		snprintf(buf, len, "=[%c%c//]", c, c);
 	else if (life >= 20)
 		snprintf(buf, len, "=[%c%c%c/]", c, c, c);
 	else
