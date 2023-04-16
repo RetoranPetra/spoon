@@ -15,7 +15,7 @@ battprint(char *buf, size_t len, int acon, int life)
 	char c;
 	static int frame = 0;
 
-	c = acon ? '>' : '<';
+	c = acon ? '<' : '>';
 	if (!acon && life <= 5)
 		snprintf(buf, len, "%s", crit[frame++ % LEN(crit)]);
 	else if (life >= 80)
